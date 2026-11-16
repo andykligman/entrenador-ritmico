@@ -136,6 +136,8 @@ label.chk.off{opacity:.35;cursor:not-allowed}
 .modoseg{margin-top:18px}
 .ciclofila{display:flex;align-items:center;gap:10px;margin-top:10px}
 .ciclofila .cl{font-size:14px;color:var(--muted)}
+svg .metrica{fill:transparent;cursor:pointer}
+svg .metrica:hover{fill:color-mix(in srgb,var(--naranja) 14%,transparent)}
 p.aviso{margin:4px 0 8px;padding:8px 12px;border-radius:8px;background:var(--naranja-soft);color:var(--naranja);font-weight:600;font-size:14px;border-left:3px solid var(--naranja)}
 .hoja.vacia{opacity:.3;filter:grayscale(1) blur(1.5px);pointer-events:none}
 .hoja{transition:opacity .2s,filter .2s}
@@ -212,7 +214,7 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
 <div class="panel repro">
   <fieldset class="reprofs">
     <legend>Reproducción</legend>
-    <div class="fila"><label for="tempo">Tempo</label><input type="range" id="tempo" min="60" max="250" step="2" value="100"><span class="val" id="tempoV">100</span></div>
+    <div class="fila"><label for="tempo">Tempo</label><input type="range" id="tempo" min="60" max="250" step="1" value="75"><span class="val" id="tempoV">75</span></div>
     <div class="toggles" role="group" aria-label="Opciones de reproducción">
       <button class="tg tgtxt" id="swing" aria-pressed="true">Swing</button>
       <div class="tgvol" id="metroBox"><button class="tg" id="metro" aria-pressed="true" aria-label="Metrónomo"><svg viewBox="0 0 24 24"><path d="M9.5 3h5l4 17H5.5zM8 18h8M12 15l4.5-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg></button><button class="volbtn" aria-label="Volumen del metrónomo" aria-expanded="false"><svg viewBox="0 0 12 12" width="10" height="10"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="volpop" hidden><input type="range" class="vol" id="vol_metro" min="0" max="100" value="80" aria-label="Volumen del metrónomo"><span class="volv">80</span></div></div>
@@ -244,6 +246,7 @@ const U = {
   t4: {g:'4',tag:'4T',name:'A tierra',                      c:'NNNN'},
   a4: {g:'4',tag:'4A',name:'En el aire',                    c:'RNNNNC'},
 };
+const BPB=()=>st.view==='fijo'?4:(st.metrica||4), CB=()=>BPB()*2; // pulsos y corcheas por compás
 const st = {desp:true, dif:'media', sel:new Set(['t2']), bars:16, modo:'azar', smin:1, smax:2, ciclo:3, mismo:true, cells:[], marks:[], seq:[]};
 
 function buildChecks(){
@@ -290,14 +293,14 @@ function generar(){
   if(st.view!=='fijo' && st.cont && !st._chunk){
     // continuo: 120 compases armados en bloques de 16, para que cada bloque tenga sus momentos de densidad
     const all=[], mk=[]; st._chunk=true;
-    try{ while(all.length<120*8){ st.bars=Math.min(16,120-all.length/8); st._cut = all.length+st.bars*8<120*8 ? 6 : 0; generar();
+    const cbx=CB(); try{ while(all.length<120*cbx){ st.bars=Math.min(16,120-all.length/cbx); st._cut = all.length+st.bars*cbx<120*cbx ? 6 : 0; generar();
       if(all.length && all[all.length-1]==='C' && st.cells[0]!=='R') all[all.length-1]='R';
       mk.push(...st.marks.map(m=>({pos:m.pos+all.length,k:m.k}))); all.push(...st.cells); } }
     finally{ st._chunk=false; st._cut=0; }
     st.bars=120; st.cells=all; st.marks=mk; st.pag=0; dibujar(); return;
   }
   // en continuo, los últimos 3 pulsos de cada pantalla quedan en silencio para dar vuelta la hoja
-  const total=st.bars*8-(st._chunk?(st._cut||0):0); let cells=[], marks=[];
+  const CBv=CB(), BP=BPB(); const sinMetrica=n=>n===BP?4:n; const total=st.bars*CBv-(st._chunk?(st._cut||0):0); let cells=[], marks=[];
   const keys=[...st.sel];
   const len=k=>U[k].c.length;
   const toca=(a,b)=>a!=='R' && b!=='R';
@@ -328,7 +331,7 @@ function generar(){
     const resp={densa:[0,0,1],media:[0,1,1],aire:[1,2,2]};
     let plan;
     if(Math.random()<.75){ const orden=pick([['media','densa','aire'],['aire','media','densa'],['densa','aire','media'],['media','aire','densa'],['aire','densa','media'],['densa','media','aire']]);
-      const b1=Math.round(st.bars/3/2)*2*8, b2=Math.round(st.bars*2/3/2)*2*8; plan=p=> p<b1?orden[0]:(p<b2?orden[1]:orden[2]); }
+      const b1=Math.round(st.bars/3/2)*2*CBv, b2=Math.round(st.bars*2/3/2)*2*CBv; plan=p=> p<b1?orden[0]:(p<b2?orden[1]:orden[2]); }
     else { const base=pick(['media','densa']); plan=()=>base; }
     let lastStrat='';
     const usadas=new Set();
@@ -356,7 +359,7 @@ function generar(){
     const MAX=24; // 3 compases en corcheas
     if(Math.random()<.3) sil(1);
     while(room()>=4){
-      const fBeats=Math.min(room()/2, pick([8,8,16]));
+      const fBeats=Math.min(room()/2, pick([2,2,4])*BP);
       const fEnd=cells.length+fBeats*2; const c0f=cells.length;
       const nivel=plan(cells.length), d=dens[nivel];
       const pool=['libre','libre','libre','pregunta','pregunta','celda','irregular','ciclo','desplaza']; if(pares.length) pool.push('pegadas','pegadas');
@@ -366,7 +369,7 @@ function generar(){
       let hecho=false;
       if(strat==='ciclo'){
         for(let intento=0;intento<12 && !hecho;intento++){
-          const NsBy={baja:[3,4,3],media:[3,4,5,5,3],alta:[5,7,7,5,3,4]};
+          const NsBy={baja:[3,4,3],media:[3,4,5,5,3],alta:[5,7,7,5,3,4]}; for(const k in NsBy) NsBy[k]=NsBy[k].map(sinMetrica);
           const Ns=NsBy[st.dif].filter(n=>keys.some(k=>len(k)/2+1<=n)); if(!Ns.length) break;
           const N=pick(Ns), opts=keys.filter(k=>len(k)/2+1<=N), pat=[]; let b=0;
           const k1=pick(opts); pat.push(k1); b=len(k1)/2;
@@ -388,8 +391,8 @@ function generar(){
           if(motivos.length && Math.random()<.22){ m=pick(motivos.slice(-3)); vuelve=true; }
           else m=hacerMotivo(3,5,firmas());
           if(!m) break;
-          let beat=(cells.length/2)%4;
-          if(beat===previoBeat || (vuelve && beat===m.beat)) { if(room()>=4) sil(pick([1,2])); beat=(cells.length/2)%4; }
+          let beat=(cells.length/2)%BP;
+          if(beat===previoBeat || (vuelve && beat===m.beat)) { if(room()>=4) sil(pick([1,2])); beat=(cells.length/2)%BP; }
           if(vuelve && beat===m.beat) break;
           if(cells.length+m.L*2+2>total) break;
           tocarMotivo(m); if(!vuelve) motivos.push({...m,beat}); previoBeat=beat;
@@ -405,7 +408,7 @@ function generar(){
             const g = partes.length ? pick([0,1,1]) : 0; partes.push({m,g}); L+=m.L+g; }
           if(L<12 || L>16 || partes.length<2) continue;
           if(cells.length+L*2+6>total) break;
-          for(const {m,g} of partes){ if(g) sil(g); tocarMotivo(m); motivos.push({...m,beat:(cells.length/2)%4}); }
+          for(const {m,g} of partes){ if(g) sil(g); tocarMotivo(m); motivos.push({...m,beat:(cells.length/2)%BP}); }
           sil(Math.min(rnd(3,5), room()/2)); multis++; hecho=true;
         }
       } else if(strat==='pegadas'){
@@ -415,7 +418,7 @@ function generar(){
           const [t,a]=pick(mismas.length && Math.random()<.75 ? mismas : pares);
           const formas=[[t,a],[a,t],[t,a],[a,t],[t,a,t],[a,t,a],[t,a,t,a],[a,t,a,t],[t,a,a],[a,a]].filter(f=>(new Set(f).size>1 || U[f[0]].c[0]==='R') && f.every((x,i)=>!i || !pegaMal(f[i-1],x)));
           const forma=pick(formas);
-          const off=rnd(0,3), beat0=(cells.length/2+off)%4;
+          const off=rnd(0,3), beat0=(cells.length/2+off)%BP;
           if(!nueva('p:'+forma.join()+':'+beat0)) continue;
           const largo=forma.reduce((x,k)=>x+len(k),0);
           if(cells.length+off*2+largo+2>total) continue;
@@ -457,7 +460,7 @@ function generar(){
         // desplazamientos encadenados: ciclo en 3, después en 4, un silencio largo, después en 5...
         const seqs={baja:[[3,4],[4,3]],media:[[3,4],[3,4,5],[3,5],[5,4,3],[4,3]],alta:[[3,5,7],[5,7],[3,4,5],[7,5,3],[5,3],[4,5,7]]}[st.dif];
         for(let intento=0;intento<12 && !hecho;intento++){
-          const k=pick(keys), sq=pick(seqs).filter(n=>len(k)/2+1<=n); if(sq.length<2) continue; if(sq.filter(n=>usadoN.has(k+':'+n)).length>1) continue; sq.forEach(n=>usadoN.add(k+':'+n));
+          const k=pick(keys), sq=pick(seqs).map(sinMetrica).filter((n,i,a)=>!i||n!==a[i-1]).filter(n=>len(k)/2+1<=n); if(sq.length<2) continue; if(sq.filter(n=>usadoN.has(k+':'+n)).length>1) continue; sq.forEach(n=>usadoN.add(k+':'+n));
           if(!nueva('d:'+k+':'+sq.join(''))) continue;
           sq.forEach((N,ix)=>{ const reps=2;
             if(cells.length+reps*N*2>total) return; for(let r=0;r<reps;r++){ push(k); sil(N-len(k)/2); }
@@ -480,7 +483,7 @@ function generar(){
     // validar: ningún compás idéntico más de 3 veces seguidas y proporciones parejas entre unidades
     const valida=()=>{
       let fallas=0; const c=cells.slice(0,total); while(c.length<total) c.push('R');
-      const bars=[]; for(let b=0;b<st.bars;b++) bars.push(c.slice(b*8,b*8+8).join(''));
+      const bars=[]; for(let b=0;b<st.bars;b++) bars.push(c.slice(b*CBv,b*CBv+CBv).join(''));
       let run=1; for(let b=1;b<bars.length;b++){ run = bars[b]===bars[b-1] ? run+1 : 1; if(run>3) fallas+=5; if(run>2 && /^R+$/.test(bars[b])) fallas+=3; }
       if(bars.length>2 && /^R+$/.test(bars[bars.length-1]) && /^R+$/.test(bars[bars.length-2])) fallas+=2;
       if(keys.length>1){ const cnt={}; keys.forEach(k=>cnt[k]=0); marks.forEach(m=>{ if(m.pos<total) cnt[m.k]++; });
@@ -533,7 +536,7 @@ function generar(){
       let i=0, prev='', fallos=0;
       // frase: dos patrones distintos seguidos (A B) que se repiten una vez exacta (A B A B).
       // Pasa más cuantas más unidades hay, y más en 5 y 7 que en 3.
-      const pFrase=Math.min(.9,{3:.18,5:.55,7:.65}[N]*(keys.length===1?.25:keys.length===2?1:1.3));
+      const pFrase=Math.min(.9,{3:.18,4:.4,5:.55,7:.65}[N]*(keys.length===1?.25:keys.length===2?1:1.3));
       while(cells.length+N*2*2<=total){
         if(pool.length>1 && Math.random()<pFrase && cells.length+N*2*4<=total){
           const A=pool[i%pool.length], B=pool[(i+1)%pool.length]; i+=2;
@@ -571,7 +574,7 @@ function generar(){
 }
 
 // ---------- de celdas a figuras ----------
-function eventos(c,norm=true){
+function eventos(c,norm=true,cb=CB()){
   const ev=[]; let i=0;
   while(i<c.length){
     if(c[i]==='T'){ ev.push({t:'n',s:i,d:2,trip:true}); i+=2; continue; }
@@ -585,22 +588,22 @@ function eventos(c,norm=true){
     if(e.t==='r'){ out.push(e); continue; }
     if(e.trip){ out.push({t:'n',s:e.s,d:2,trip:true,tieFrom:false,nid:id++,onset:true}); continue; }
     let s=e.s, d=e.d, first=true; const nid=id++;
-    while(d>0){ const barEnd=(Math.floor(s/8)+1)*8; const dd=Math.min(d,barEnd-s);
-      for(const p of partirNota(s%8,dd)){ out.push({t:'n',s:Math.floor(s/8)*8+p.s,d:p.d,tieFrom:!first,nid,onset:first}); first=false; }
+    while(d>0){ const barEnd=(Math.floor(s/cb)+1)*cb; const dd=Math.min(d,barEnd-s);
+      for(const p of partirNota(s%cb,dd)){ out.push({t:'n',s:Math.floor(s/cb)*cb+p.s,d:p.d,tieFrom:!first,nid,onset:first}); first=false; }
       s+=dd; d-=dd; }
   }
   const res=[]; let k=0;
   while(k<out.length){
     if(out[k].t!=='r'){ res.push(out[k]); k++; continue; }
-    let s=out[k].s, n=0; while(k<out.length && out[k].t==='r' && Math.floor(out[k].s/8)===Math.floor(s/8)){ n++; k++; }
-    for(const r of partirSilencio(s%8,n)) res.push({t:'r',s:Math.floor(s/8)*8+r.s,d:r.d});
+    let s=out[k].s, n=0; while(k<out.length && out[k].t==='r' && Math.floor(out[k].s/cb)===Math.floor(s/cb)){ n++; k++; }
+    for(const r of partirSilencio(s%cb,n,cb)) res.push({t:'r',s:Math.floor(s/cb)*cb+r.s,d:r.d,bar:r.bar});
   }
   return res;
 }
 function partirNota(s,d){
   const p=[];
   while(d>0){
-    if(s%2===1){ if(d>=2 && (s===1||s===5)){ const t=Math.min(d,3); p.push({s,d:t}); s+=t; d-=t; continue; } p.push({s,d:1}); s++; d--; continue; }
+    if(s%2===1){ if(d>=2 && s%4===1){ const t=Math.min(d,3); p.push({s,d:t}); s+=t; d-=t; continue; } p.push({s,d:1}); s++; d--; continue; }
     let take;
     if(d>=8 && s===0) take=8;
     else if(d>=6 && s===0) take=6;
@@ -613,13 +616,13 @@ function partirNota(s,d){
   }
   return p;
 }
-function partirSilencio(s,n){
+function partirSilencio(s,n,cb=8){
   const p=[];
   while(n>0){
-    if(s===0 && n>=8){ p.push({s,d:8}); s+=8; n-=8; continue; }
-    if(s%2===1 && !(n>=3 && (s===1||s===5))){ p.push({s,d:1}); s++; n--; continue; }
+    if(s===0 && n>=cb){ p.push({s,d:cb,bar:true}); s+=cb; n-=cb; continue; }
+    if(s%2===1 && !(n>=3 && s%4===1)){ p.push({s,d:1}); s++; n--; continue; }
     if(s%4===0 && n>=4){ p.push({s,d:4}); s+=4; n-=4; continue; }
-    if(n>=3 && (s===4||s===1||s===5)){ p.push({s,d:3}); s+=3; n-=3; continue; }
+    if(n>=3 && (s%4===1 || (s%4===0 && s>0))){ p.push({s,d:3}); s+=3; n-=3; continue; }
     if(n>=2){ p.push({s,d:2}); s+=2; n-=2; continue; }
     p.push({s,d:1}); s++; n--;
   }
@@ -631,13 +634,14 @@ const NS='http://www.w3.org/2000/svg';
 function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
 let noteEls=[], barEls=[];
 // dibuja figuras: X(abs) da la x de una corchea; Y0(abs) la línea superior del pentagrama
-function drawEvents(svg,evs,X,Y0,sp,collect){
+function drawEvents(svg,evs,X,Y0,sp,collect,cb=8){
   const mid=a=>Y0(a)+2*sp, stemTop=a=>mid(a)-4.5*sp;
   const notes=evs.filter(e=>e.t==='n');
   const groups=[]; let cur=[];
   for(const e of evs){
     if(e.t==='n' && e.d===1){ const prev=cur[cur.length-1];
-      if(prev && prev.s+1===e.s && Math.floor(prev.s/4)===Math.floor(e.s/4)) cur.push(e); else { if(cur.length) groups.push(cur); cur=[e]; } }
+      const grp=x=>Math.floor(x/cb)*100+Math.floor((x%cb)/4);
+      if(prev && prev.s+1===e.s && grp(prev.s)===grp(e.s)) cur.push(e); else { if(cur.length) groups.push(cur); cur=[e]; } }
     else { if(cur.length) groups.push(cur); cur=[]; }
   }
   if(cur.length) groups.push(cur);
@@ -645,7 +649,7 @@ function drawEvents(svg,evs,X,Y0,sp,collect){
   const hw=sp*0.86, hh=sp;
   for(const e of evs){
     const x=X(e.s), m=mid(e.s), g=el('g',{class:'ev'},svg);
-    if(e.t==='r'){ if(e.d===8) g._barCenter=(X(e.s)+X(e.s+7))/2; dibujarSilencio(g,x,Y0(e.s),sp,e.d); continue; }
+    if(e.t==='r'){ if(e.bar){ g._barCenter=(X(e.s)+X(e.s+e.d-1))/2; dibujarSilencio(g,x,Y0(e.s),sp,8); continue; } dibujarSilencio(g,x,Y0(e.s),sp,e.d); continue; }
     if(e.trip){ // tresillo de corcheas: tres cabezas en el pulso, barra y un 3 arriba
       const step=(X(e.s+1)-x)*2/3, top=stemTop(e.s), xs=[0,1,2].map(j=>x+j*step);
       for(const xx of xs){ el('path',{d:`M${xx-hw-2},${m+hh} L${xx-hw+3},${m+hh} L${xx+hw+2},${m-hh} L${xx+hw-3},${m-hh} Z`,fill:'currentColor'},g);
@@ -671,14 +675,14 @@ const pagOff=()=>st.cont&&st.view!=='fijo' ? (st.pag||0)*PAG : 0;
 const pagBars=()=>st.cont&&st.view!=='fijo' ? Math.min(PAG, st.bars-pagOff()) : st.bars;
 function dibujar(){
   const svg=document.getElementById('part'); svg.innerHTML=''; noteEls=[]; barEls=[];
-  const OFF=pagOff(), NB=pagBars(), cells=st.cells.slice(OFF*8,(OFF+NB)*8);
-  const W=1000, perLine=st.view==='fijo' ? 2 : ((svg.clientWidth||1000)<560?2:4);
+  const CBv=CB(), BP=BPB(), OFF=pagOff(), NB=pagBars(), cells=st.cells.slice(OFF*CBv,(OFF+NB)*CBv);
+  const W=1000, perLine=st.view==='fijo' ? 2 : ((svg.clientWidth||1000)<560?(BP>=5?1:2):({3:4,4:4,5:3,7:2}[BP]));
   const sp=7, lineH=118, left=52, right=8, top=40;
-  const barW=(W-left-right)/perLine, ew=(barW-22)/8;
+  const barW=(W-left-right)/perLine, ew=(barW-22)/CBv;
   const lines=Math.ceil(NB/perLine);
   svg.setAttribute('viewBox',`0 0 ${W} ${top+(lines-1)*lineH+52}`);
-  const X=abs=>{ const b=Math.floor(abs/8), bi=b%perLine; return left+bi*barW+14+(abs%8)*ew+ew*0.35; };
-  const Y0=abs=>top+Math.floor(Math.floor(abs/8)/perLine)*lineH;
+  const X=abs=>{ const b=Math.floor(abs/CBv), bi=b%perLine; return left+bi*barW+14+(abs%CBv)*ew+ew*0.35; };
+  const Y0=abs=>top+Math.floor(Math.floor(abs/CBv)/perLine)*lineH;
   for(let ln=0;ln<lines;ln++){
     const y=top+ln*lineH, g=el('g',{class:'staff'},svg);
     const nb=Math.min(perLine,NB-ln*perLine), x1=left+nb*barW;
@@ -689,10 +693,12 @@ function dibujar(){
     for(let b=1;b<=nb;b++){ const x=left+b*barW, fin=b===nb&&ln===lines-1&&OFF+NB>=st.bars;
       el('line',{x1:x,x2:x,y1:y,y2:y+4*sp,stroke:'currentColor','stroke-width':fin?3:1.2},svg);
       if(fin) el('line',{x1:x-5,x2:x-5,y1:y,y2:y+4*sp,stroke:'currentColor','stroke-width':1.2},svg); }
-    if(ln===0) for(const yy of [y+2*sp-1,y+4*sp+1]) el('text',{x:28,y:yy,'font-size':17,'font-weight':700,'font-family':'Georgia,serif',fill:'currentColor'},svg).textContent='4';
+    if(ln===0){ [[y+2*sp-1,BP],[y+4*sp+1,4]].forEach(([yy,t])=>{ el('text',{x:28,y:yy,'font-size':17,'font-weight':700,'font-family':'Georgia,serif',fill:'currentColor'},svg).textContent=t; });
+      if(st.view!=='fijo'){ const hit=el('rect',{x:22,y:y-6,width:22,height:4*sp+12,rx:4,class:'metrica'},svg); const tt=document.createElementNS(NS,'title'); tt.textContent='Cambiar el compás (4, 5, 3, 7)'; hit.appendChild(tt);
+        hit.addEventListener('click',()=>{ const orden=[4,5,3,7]; setMetrica(orden[(orden.indexOf(BP)+1)%orden.length]); }); } }
   }
   if(false) for(const m of st.marks){ let p=m.pos; while(st.cells[p]==='R') p++; if(p<st.cells.length) el('text',{class:'lbl',x:X(p)-4,y:Y0(p)-28},svg).textContent=U[m.k].tag; }
-  drawEvents(svg,eventos(cells, st.view!=='fijo'),X,Y0,sp,noteEls);
+  drawEvents(svg,eventos(cells,true,CBv),X,Y0,sp,noteEls,CBv);
   X_=X; Y0_=Y0; el('line',{id:'playhead',x1:0,x2:0,y1:0,y2:0,stroke:'var(--naranja)','stroke-width':3,'stroke-linecap':'round',style:'opacity:0'},svg);
 }
 let X_=()=>0, Y0_=()=>0;
@@ -753,7 +759,7 @@ function play(){
   playing=true; document.getElementById('play').textContent='■ Detener';
   // Motor por pulsos: se programa de a poco (120 ms adelante) para poder cambiar el tempo sin cortar.
   const evs=[]; for(const e of eventos(st.cells,true)) if(e.t==='n' && e.onset){ if(e.trip) for(let j=0;j<3;j++) evs.push({b:e.s/2+j/3}); else evs.push({c:e.s}); }
-  eng={evs, L:st.bars*4, bpm:+document.getElementById('tempo').value, aT:ctx.currentTime+0.15, aB:-4, nextB:-4, ni:0, nLap:0, lap:0, bi:-1};
+  eng={evs, L:st.bars*BPB(), bpb:BPB(), bpm:+document.getElementById('tempo').value, aT:ctx.currentTime+0.15, aB:-BPB(), nextB:-BPB(), ni:0, nLap:0, lap:0, bi:-1};
   ciclo._bi=-1;
   timerT=setInterval(tick,25); tick();
   raf=requestAnimationFrame(anim);
@@ -771,8 +777,8 @@ function tick(){
   const horizon=beatAt(ctx.currentTime+0.12), limite=loopNow()?Infinity:(eng.lap+1)*eng.L;
   // cuenta (siempre suena, con el mismo click que el metrónomo) y metrónomo
   while(eng.nextB<horizon && eng.nextB<limite){ const b=eng.nextB;
-    if(b<0) metroClick(timeAt(b), b===-4);
-    else if(on('metro')) metroClick(timeAt(b), (b%eng.L)%4===0);
+    if(b<0) metroClick(timeAt(b), b===-eng.bpb);
+    else if(on('metro')) metroClick(timeAt(b), (b%eng.L)%eng.bpb===0);
     eng.nextB++; }
   // notas
   if(eng.evs.length) while(true){
@@ -789,15 +795,15 @@ function anim(){
     const lap=Math.floor(b/eng.L);
     if(lap>eng.lap){ if(loopNow()) eng.lap=lap; else { stop(); return; } }
     const local=b-eng.lap*eng.L;
-    if(st.cont && st.view!=='fijo'){ const p=Math.floor((local+3)/(PAG*4)), falta=p*PAG*4-local;
-      const cu=document.getElementById('cuenta'); if(p>0 && falta>0 && falta<=3 && p*PAG<st.bars){ cu.textContent=5-Math.ceil(falta); cu.hidden=false; } else cu.hidden=true;
+    if(st.cont && st.view!=='fijo'){ const PBb=eng.bpb, p=Math.floor((local+3)/(PAG*PBb)), falta=p*PAG*PBb-local;
+      const cu=document.getElementById('cuenta'); if(p>0 && falta>0 && falta<=3 && p*PAG<st.bars){ cu.textContent=PBb-Math.ceil(falta)+1; cu.hidden=false; } else cu.hidden=true;
       if(p!==st.pag && p*PAG<st.bars){ st.pag=p; dibujar(); ciclo._bi=-1;
         const h=document.getElementById('cuenta').parentNode; if(h){ const r=h.getBoundingClientRect(); if(r.top<0||r.top>innerHeight*0.5) h.scrollIntoView({behavior:'smooth',block:'start'}); } } }
-    const PB=pagOff()*4, beatL=Math.floor(local)-PB, cell=Math.floor(local)*2+((local%1)>=swing()?1:0)-PB*2;
+    const PB=pagOff()*eng.bpb, beatL=Math.floor(local)-PB, cell=Math.floor(local)*2+((local%1)>=swing()?1:0)-PB*2;
     for(const n of noteEls) n.g.classList.toggle('on', cell>=n.e.s && cell<n.e.s+n.e.d);
     const ph=document.getElementById('playhead');
-    if(ph){ if(on('metro') && beatL>=0 && beatL<pagBars()*4){ const a=beatL*2; ph.setAttribute('x1',X_(a)-4); ph.setAttribute('x2',X_(a)-4); ph.setAttribute('y1',Y0_(a)-10); ph.setAttribute('y2',Y0_(a)+4*7+10); ph.style.opacity=1; } else ph.style.opacity=0; }
-    const bi=Math.floor(beatL/4); barEls.forEach((x,i)=>x.classList.toggle('on', i===bi));
+    if(ph){ if(on('metro') && beatL>=0 && beatL<pagBars()*eng.bpb){ const a=beatL*2; ph.setAttribute('x1',X_(a)-4); ph.setAttribute('x2',X_(a)-4); ph.setAttribute('y1',Y0_(a)-10); ph.setAttribute('y2',Y0_(a)+4*7+10); ph.style.opacity=1; } else ph.style.opacity=0; }
+    const bi=Math.floor(beatL/eng.bpb); barEls.forEach((x,i)=>x.classList.toggle('on', i===bi));
     if(bi!==ciclo._bi && barEls[bi]){ ciclo._bi=bi; const r=barEls[bi].getBoundingClientRect(); if(r.bottom>innerHeight-60 || r.top<0) window.scrollBy({top:r.top-innerHeight*0.3,behavior:'smooth'}); }
   }
   raf=requestAnimationFrame(anim);
@@ -816,6 +822,10 @@ seg('modo',v=>{st.modo=v;
     av.textContent='En desplazamientos se usan hasta '+MAXCICLO+' unidades: se destildaron '+salen.map(k=>k==='tr'?'tresillo':U[k].g+' '+U[k].name.toLowerCase()).join(', ')+'.'; }
   else syncAll(); document.getElementById('optAzar').hidden=v!=='azar'; document.getElementById('optCiclo').hidden=v!=='ciclo'; generar();});
 seg('ciclo',v=>{st.ciclo=+v;generar();});
+function opcionesCiclo(){ const M=st.metrica||4; return [3,4,5,7].filter(n=>n!==M); }
+function pintarCiclo(){ const ops=opcionesCiclo(); if(!ops.includes(st.ciclo)) st.ciclo=ops.includes(4)?4:ops[0];
+  document.getElementById('ciclo').innerHTML=ops.map(n=>`<button data-v="${n}" aria-pressed="${n===st.ciclo}">${n}</button>`).join(''); }
+function setMetrica(M){ st.metrica=M; pintarCiclo(); generar(); guardar(); }
 
 const bindR=(id,f,fmt)=>{ const r=document.getElementById(id), o=document.getElementById(id+'V'); r.addEventListener('input',()=>{o.textContent=fmt?fmt(r.value):r.value; f&&f(+r.value);}); };
 
@@ -837,12 +847,14 @@ let rz; window.addEventListener('resize',()=>{clearTimeout(rz); rz=setTimeout(()
 const RITMOS=['RNCNNCRR','RNCNRRNC','NCCNRNRN','NNRNRNRN','NNRRRNNC','RNNNCNCC','NNNNRNCN','RRNNNCNN','NNCNCCNC','RNNNRRNC',
   'RNNNNNNC','NNRNNCNN','RRNNRNNN','NCNNNNNC','RNCNCNNC','NCCNNNNN','RNCNNCNN','NNRNRNNN','RRRNCNCN','NCCNCNCC','RNNNRNNN','RNNNRNCC'];
 st.view='impro'; st.fijoModo=1; st.fijoSel=[0]; st.fijoNext=0; st.barsImpro=16;
+function limpiarFijo(str){ // sin ligaduras: negra en el pulso, corchea a contratiempo, el resto silencio
+  const c=str.split(''); for(let i=0;i<c.length;i++){ if(c[i]!=='N') continue; let j=i+1; if(i%2===0 && c[j]==='C') j++; while(c[j]==='C'){ c[j]='R'; j++; } } return c; }
 function miniBar(str){
-  const c=str.split(''), sp=4.2, ew=17, w=14+8*ew, svg=document.createElementNS(NS,'svg');
+  const c=limpiarFijo(str), sp=4.2, ew=17, w=14+8*ew, svg=document.createElementNS(NS,'svg');
   svg.setAttribute('viewBox',`0 0 ${w} 46`); svg.setAttribute('aria-hidden','true');
   const y=20; for(let i=0;i<5;i++) el('line',{x1:2,x2:w-2,y1:y+i*sp,y2:y+i*sp,stroke:'var(--staff)','stroke-width':.8},svg);
   el('line',{x1:w-2,x2:w-2,y1:y,y2:y+4*sp,stroke:'currentColor','stroke-width':1},svg);
-  drawEvents(svg,eventos(c,false),a=>12+a*ew,()=>y,sp,null);
+  drawEvents(svg,eventos(c,true,8),a=>12+a*ew,()=>y,sp,null,8);
   return svg;
 }
 function buildGrid(){
@@ -856,7 +868,7 @@ function fijoUpdate(){
   stop();
   if(st.fijoModo===2 && st.fijoSel.length<2) st.fijoSel=[st.fijoSel[0], (st.fijoSel[0]+1)%RITMOS.length];
   if(st.fijoModo===1) st.fijoSel=[st.fijoSel[0]];
-  st.bars=st.fijoModo; st.cells=st.fijoSel.flatMap(i=>RITMOS[i].split('')); st.marks=[];
+  st.bars=st.fijoModo; st.cells=st.fijoSel.flatMap(i=>limpiarFijo(RITMOS[i])); st.marks=[];
   document.querySelector('.hoja').classList.remove('vacia'); document.getElementById('play').classList.remove('apagado');
   dibujar();
 }
@@ -876,20 +888,21 @@ document.getElementById('tabFijo').addEventListener('click',()=>setVista('fijo')
 function actLoop(){ document.getElementById('loop').hidden = st.view==='fijo' || (st.cont && st.view!=='fijo'); }
 // ---------- guardar y recuperar las opciones (quedan como las dejaste, aunque recargues) ----------
 const TOGS=['swing','metro','notas','loop'];
-function guardar(){ try{ localStorage.setItem('ae_estado', JSON.stringify({sel:[...st.sel], largo:document.getElementById('compases').value, modo:st.modo, ciclo:st.ciclo, view:st.view, fijoModo:st.fijoModo,
+function guardar(){ try{ localStorage.setItem('ae_estado', JSON.stringify({sel:[...st.sel], largo:document.getElementById('compases').value, modo:st.modo, ciclo:st.ciclo, metrica:st.metrica||4, view:st.view, fijoModo:st.fijoModo,
   tg:Object.fromEntries(TOGS.map(id=>[id,document.getElementById(id).getAttribute('aria-pressed')]))})); }catch(e){} }
 function recuperar(){ let d=null; try{ d=JSON.parse(localStorage.getItem('ae_estado')||'null'); }catch(e){} if(!d) return 'impro';
   if(Array.isArray(d.sel)) st.sel=new Set(d.sel.filter(k=>U[k]));
   if(d.largo && document.querySelector('#compases option[value="'+d.largo+'"]')){ document.getElementById('compases').value=d.largo; st.cont=d.largo==='cont'; st.bars=st.cont?120:+d.largo; st.barsImpro=st.bars; }
   if(d.modo==='azar'||d.modo==='ciclo'){ st.modo=d.modo; setSeg('modo',d.modo); document.getElementById('optAzar').hidden=d.modo!=='azar'; document.getElementById('optCiclo').hidden=d.modo!=='ciclo'; }
-  if([3,5,7].includes(d.ciclo)){ st.ciclo=d.ciclo; setSeg('ciclo',d.ciclo); }
+  if([3,5,7].includes(d.metrica)) st.metrica=d.metrica;
+  if([3,4,5,7].includes(d.ciclo)) st.ciclo=d.ciclo;
   if(d.fijoModo===1||d.fijoModo===2){ st.fijoModo=d.fijoModo; setSeg('fijoModo',d.fijoModo); }
   if(d.tg) for(const id of TOGS) if(d.tg[id]==='true'||d.tg[id]==='false') document.getElementById(id).setAttribute('aria-pressed',d.tg[id]);
   if(st.modo==='ciclo' && st.sel.size>MAXCICLO) st.sel=new Set([...st.sel].slice(0,MAXCICLO));
   return d.view==='fijo'?'fijo':'impro'; }
 document.addEventListener('click',()=>setTimeout(guardar,0)); document.addEventListener('change',()=>setTimeout(guardar,0));
 const vistaInicial=recuperar();
-buildChecks(); syncAll(); actLoop();
+buildChecks(); syncAll(); actLoop(); pintarCiclo();
 if(vistaInicial==='fijo') setVista('fijo'); else generar();
 </script>
 </body>
