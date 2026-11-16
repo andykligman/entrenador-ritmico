@@ -159,9 +159,40 @@ p.aviso{margin:4px 0 8px;padding:8px 12px;border-radius:8px;background:var(--nar
 button.apagado{opacity:.4;cursor:not-allowed}
 footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+button.resumen,.tstep{display:none}
 @media (max-width:600px){
-  body{font-size:15px}
-  h1{font-size:23px;margin-top:16px}
+  body{font-size:17px}
+  header{padding-bottom:10px}
+  header img{height:30px}
+  h1{font-size:21px;margin-top:12px}
+  .tabs{margin:10px 0 12px}
+  .tabs button{font-size:17px;padding:10px 14px}
+  button.resumen{display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:12px 14px;margin:0 0 12px;font:500 15px var(--text);color:var(--body);cursor:pointer}
+  button.resumen .resTxt{flex:1;line-height:1.35}
+  button.resumen .resEd{display:inline-flex;align-items:center;gap:6px;font:700 14px var(--display);color:var(--naranja);white-space:nowrap}
+  button.resumen .resEd svg{transition:transform .18s}
+  button.resumen[aria-expanded="true"] .resEd svg{transform:rotate(180deg)}
+  body[data-vista="impro"]:not(.opts) .plegable{display:none!important}
+  body[data-vista="fijo"] button.resumen{display:none}
+  .tstep{display:flex;align-items:center;border:1px solid var(--rule);border-radius:10px;background:var(--card);flex:none}
+  .tstep button{width:40px;height:48px;border:0;background:none;font:700 22px var(--display);color:var(--azul);cursor:pointer}
+  .tstep span{min-width:34px;text-align:center;font:700 17px var(--display);color:var(--ink)}
+  .acciones .btn{min-height:48px;font-size:15px;white-space:nowrap;padding:0 6px;display:inline-flex;align-items:center;justify-content:center}
+  .acciones{gap:8px}
+  .tstep button{width:34px}
+  .btn{font-size:16px;padding:12px 16px}
+  .seg button{min-height:44px;font-size:16px;padding:0 14px}
+  .tg{width:48px;height:48px}
+  .tg.tgtxt{font-size:16px}
+  .volbtn{width:30px}
+  .tg.tgsm{width:44px;height:44px}
+  .selwrap select{font-size:16px;padding:11px 40px 11px 12px}
+  .reprofs .fila input[type=range]{height:28px}
+  details.grp summary .gname{font-size:20px}
+  details.grp summary .chev{width:34px;height:34px}
+  svg.mini{height:50px}
+  label.chk{padding:8px 4px}
+  legend{font-size:16px}
   .titulo{flex-wrap:nowrap;gap:10px;align-items:center}
   .titulo h1{flex:1}
   button.info{margin-top:12px;flex:none;width:32px;height:32px}
@@ -221,16 +252,17 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
 <div class="tabs" role="tablist" aria-label="Secciones">
   <button role="tab" id="tabImpro" aria-selected="true">Improvisación</button><button role="tab" id="tabFijo" aria-selected="false">Ritmo fijo</button>
 </div>
+<button id="resumen" class="resumen" aria-expanded="false" aria-controls="vistaImpro"><span class="resTxt"></span><span class="resEd">Opciones<svg viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
 <div id="vistaImpro">
 
-<div class="azar">
+<div class="azar plegable">
   <span class="azlbl">Elegir unidades al azar</span>
   <div class="seg" id="azarN" role="group" aria-label="Cantidad de unidades elegidas al azar">
     <button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button>
   </div>
 </div>
 
-<div class="panel">
+<div class="panel plegable">
   <fieldset>
     <legend>Unidades por cantidad de notas</legend>
     <p id="avisoSel" class="aviso" role="status" hidden>Seleccioná una casilla para poder realizar el ejercicio.</p>
@@ -272,7 +304,7 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
 </div>
 </div>
 
-<div class="panel repro">
+<div class="panel repro plegable">
   <fieldset class="reprofs">
     <legend>Reproducción</legend>
     <div class="fila"><label for="tempo">Tempo</label><input type="range" id="tempo" min="60" max="250" step="1" value="75"><span class="val" id="tempoV">75</span></div>
@@ -285,6 +317,7 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
 </div>
 
 <div class="acciones">
+  <div class="tstep" role="group" aria-label="Tempo"><button id="tMenos" aria-label="Bajar el tempo">–</button><span id="tVal">75</span><button id="tMas" aria-label="Subir el tempo">+</button></div>
   <button class="btn prim" id="play">▶ Reproducir</button>
   <button class="btn" id="gen">Generar otra</button>
   <span class="nota" id="estado"></span>
@@ -739,9 +772,9 @@ function dibujar(){
   const CBv=CB(), BP=BPB(), OFF=pagOff(), NB=pagBars(), cells=st.cells.slice(OFF*CBv,(OFF+NB)*CBv);
   const cw=svg.clientWidth||1000, angosto=cw<560;
   // en el teléfono el dibujo usa un lienzo más chico para que las figuras queden de un tamaño legible
-  const W=angosto ? (BP>=5 && st.view!=='fijo' ? 440 : 500) : 1000, perLine=st.view==='fijo' ? (angosto?1:2) : (angosto?(BP>=5?1:2):({3:4,4:4,5:3,7:2}[BP]));
+  const W=angosto ? ({3:300,4:340,5:340,7:340}[BP]) : 1000, perLine=angosto ? 1 : (st.view==='fijo' ? 2 : ({3:4,4:4,5:3,7:2}[BP]));
   dibujar._ang=angosto;
-  const sp=7, left=52, right=8, top=40, lineH=(svg.clientWidth||1000)<560?100:118;
+  const sp=7, left=52, right=8, top=40, lineH=(svg.clientWidth||1000)<560?88:118;
   const barW=(W-left-right)/perLine, ew=(barW-22)/CBv;
   const lines=Math.ceil(NB/perLine);
   svg.setAttribute('viewBox',`0 0 ${W} ${top+(lines-1)*lineH+52}`);
@@ -951,7 +984,7 @@ seg('fijoModo',v=>{ st.fijoModo=+v; fijoNuevo(); });
 function fijoNuevo(){ const prev=new Set(st.fijoSel); const libres=[...RITMOS.keys()].filter(i=>!prev.has(i)); const a=pick(libres); let b=pick(libres); while(b===a) b=pick(libres); st.fijoSel=st.fijoModo===1?[a]:[a,b]; fijoUpdate(); }
 document.getElementById('fijoAzar').addEventListener('click',fijoNuevo);
 function setVista(v){
-  stop(); st.view=v;
+  stop(); st.view=v; document.body.dataset.vista=v;
   document.getElementById('tabImpro').setAttribute('aria-selected',v==='impro'); document.getElementById('tabFijo').setAttribute('aria-selected',v==='fijo');
   document.getElementById('vistaImpro').hidden=v!=='impro'; document.getElementById('vistaFijo').hidden=v!=='fijo';
   document.getElementById('gen').hidden=v!=='impro'; actLoop();
@@ -963,7 +996,7 @@ document.getElementById('tabFijo').addEventListener('click',()=>setVista('fijo')
 function actLoop(){ document.getElementById('loop').hidden = st.view==='fijo' || (st.cont && st.view!=='fijo'); }
 // ---------- guardar y recuperar las opciones (quedan como las dejaste, aunque recargues) ----------
 const TOGS=['swing','metro','notas','loop'];
-function guardar(){ try{ localStorage.setItem('ae_estado', JSON.stringify({sel:[...st.sel], largo:document.getElementById('compases').value, modo:st.modo, ciclo:st.ciclo, metrica:st.metrica||4, view:st.view, fijoModo:st.fijoModo,
+function guardar(){ pintarResumen(); try{ localStorage.setItem('ae_estado', JSON.stringify({sel:[...st.sel], largo:document.getElementById('compases').value, modo:st.modo, ciclo:st.ciclo, metrica:st.metrica||4, view:st.view, fijoModo:st.fijoModo,
   tg:Object.fromEntries(TOGS.map(id=>[id,document.getElementById(id).getAttribute('aria-pressed')]))})); }catch(e){} }
 function recuperar(){ let d=null; try{ d=JSON.parse(localStorage.getItem('ae_estado')||'null'); }catch(e){} if(!d) return 'impro';
   if(Array.isArray(d.sel)) st.sel=new Set(d.sel.filter(k=>U[k]));
@@ -977,6 +1010,20 @@ function recuperar(){ let d=null; try{ d=JSON.parse(localStorage.getItem('ae_est
   return d.view==='fijo'?'fijo':'impro'; }
 document.addEventListener('click',()=>setTimeout(guardar,0)); document.addEventListener('change',()=>setTimeout(guardar,0));
 let rsT=0; addEventListener('resize',()=>{ clearTimeout(rsT); rsT=setTimeout(()=>{ const a=(document.getElementById('part').clientWidth||1000)<560; if(a!==dibujar._ang && st.cells.length) dibujar(); },150); });
+// ---------- teléfono: resumen de opciones plegable y tempo en la barra de abajo ----------
+const CORTO={t1n:'1 tierra',a1c:'1 aire',t2:'2 tierra',a2:'2 aire',t3:'3 tierra',a3:'3 aire',tr:'tresillo',t4:'4 tierra',a4:'4 aire'};
+function pintarResumen(){ const r=document.querySelector('#resumen .resTxt'); if(!r) return;
+  const u=Object.keys(U).filter(k=>st.sel.has(k)).map(k=>CORTO[k]||k).join(', ')||'Sin unidades';
+  const sel=document.getElementById('compases'); const largo=sel.options[sel.selectedIndex].text;
+  const modo=st.modo==='ciclo'?'Desplazamientos de '+st.ciclo:'Libre';
+  r.innerHTML='<strong>'+u+'</strong><br>'+largo+' · '+modo+' · '+(st.metrica||4)+'/4'; }
+function abrirOpts(on){ document.body.classList.toggle('opts',on); document.getElementById('resumen').setAttribute('aria-expanded',on); try{ localStorage.setItem('ae_opts',on?'1':'0'); }catch(e){} }
+document.getElementById('resumen').addEventListener('click',()=>abrirOpts(!document.body.classList.contains('opts')));
+(()=>{ let v='1'; try{ v=localStorage.getItem('ae_opts')??'1'; }catch(e){} abrirOpts(v==='1'); })();
+const tIn=document.getElementById('tempo'), tVal=document.getElementById('tVal');
+const pasoTempo=d=>{ tIn.value=Math.max(+tIn.min,Math.min(+tIn.max,+tIn.value+d)); tIn.dispatchEvent(new Event('input')); };
+document.getElementById('tMenos').addEventListener('click',()=>pasoTempo(-2)); document.getElementById('tMas').addEventListener('click',()=>pasoTempo(2));
+tIn.addEventListener('input',()=>{ tVal.textContent=tIn.value; });
 const intro=document.getElementById('intro');
 document.getElementById('infoBtn').addEventListener('click',()=>{ intro.showModal(); });
 document.getElementById('introOk').addEventListener('click',()=>{ intro.close(); });
@@ -985,7 +1032,8 @@ intro.addEventListener('click',e=>{ if(e.target===intro) intro.close(); });
 try{ if(!localStorage.getItem('ae_intro')) intro.showModal(); }catch(e){ intro.showModal(); }
 const vistaInicial=recuperar();
 buildChecks(); syncAll(); actLoop(); pintarCiclo();
-if(vistaInicial==='fijo') setVista('fijo'); else generar();
+if(vistaInicial==='fijo') setVista('fijo'); else { document.body.dataset.vista='impro'; generar(); }
+tVal.textContent=tIn.value; pintarResumen();
 </script>
 </body>
 </html>
