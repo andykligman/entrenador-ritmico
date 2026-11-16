@@ -159,6 +159,30 @@ p.aviso{margin:4px 0 8px;padding:8px 12px;border-radius:8px;background:var(--nar
 button.apagado{opacity:.4;cursor:not-allowed}
 footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media (max-width:600px){
+  body{font-size:15px}
+  h1{font-size:23px;margin-top:16px}
+  .titulo{flex-wrap:nowrap;gap:10px;align-items:center}
+  .titulo h1{flex:1}
+  button.info{margin-top:12px;flex:none;width:32px;height:32px}
+  .panel{padding:12px}
+  .acciones{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--paper);margin:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--rule);flex-wrap:nowrap;box-shadow:0 -6px 16px rgba(0,0,0,.06)}
+  .wrap{padding-bottom:96px}
+  .acciones .btn{flex:1;justify-content:center;padding-left:8px;padding-right:8px}
+  .acciones #estado{display:none}
+  .acciones .cuenta{font-size:26px;padding:4px 12px}
+  .hoja{padding:10px 4px}
+  .reprofs{gap:12px}
+  .reprofs .fila{width:100%}
+  .reprofs .fila input[type=range]{flex:1}
+  #notasBox .volpop{left:auto;right:0}
+  .introIn{padding:20px 18px 16px;font-size:15px}
+  .introIn h2{font-size:21px}
+  .intro .introPie{position:sticky;bottom:-16px;background:var(--card);padding:10px 0}
+  .intro .introPie .btn{width:100%;justify-content:center}
+  details.grp summary{padding:10px 2px}
+  .seg button{min-height:38px}
+}
 </style>
 </head>
 <body>
@@ -713,8 +737,11 @@ const pagBars=()=>st.cont&&st.view!=='fijo' ? Math.min(PAG, st.bars-pagOff()) : 
 function dibujar(){
   const svg=document.getElementById('part'); svg.innerHTML=''; noteEls=[]; barEls=[];
   const CBv=CB(), BP=BPB(), OFF=pagOff(), NB=pagBars(), cells=st.cells.slice(OFF*CBv,(OFF+NB)*CBv);
-  const W=1000, perLine=st.view==='fijo' ? 2 : ((svg.clientWidth||1000)<560?(BP>=5?1:2):({3:4,4:4,5:3,7:2}[BP]));
-  const sp=7, lineH=118, left=52, right=8, top=40;
+  const cw=svg.clientWidth||1000, angosto=cw<560;
+  // en el teléfono el dibujo usa un lienzo más chico para que las figuras queden de un tamaño legible
+  const W=angosto ? (BP>=5 && st.view!=='fijo' ? 440 : 500) : 1000, perLine=st.view==='fijo' ? (angosto?1:2) : (angosto?(BP>=5?1:2):({3:4,4:4,5:3,7:2}[BP]));
+  dibujar._ang=angosto;
+  const sp=7, left=52, right=8, top=40, lineH=(svg.clientWidth||1000)<560?100:118;
   const barW=(W-left-right)/perLine, ew=(barW-22)/CBv;
   const lines=Math.ceil(NB/perLine);
   svg.setAttribute('viewBox',`0 0 ${W} ${top+(lines-1)*lineH+52}`);
@@ -763,7 +790,7 @@ const on=id=>document.getElementById(id).getAttribute('aria-pressed')==='true';
 // ---------- audio ----------
 let ctx=null, playing=false, raf=0, sched=[], loopT=0;
 function stop(){
-  playing=false; { const cu=document.getElementById('cuenta'); if(cu) cu.hidden=true; } cancelAnimationFrame(raf); clearTimeout(loopT); clearInterval(timerT); eng=null;
+  movilFin(); playing=false; { const cu=document.getElementById('cuenta'); if(cu) cu.hidden=true; } cancelAnimationFrame(raf); clearTimeout(loopT); clearInterval(timerT); eng=null;
   if(ctx){ try{ctx.close();}catch(e){} ctx=null; }
   noteEls.forEach(n=>n.g.classList.remove('on')); barEls.forEach(b=>b.classList.remove('on')); const ph=document.getElementById('playhead'); if(ph) ph.style.opacity=0;
   const b=document.getElementById('play'); if(b) b.textContent='▶ Reproducir';
@@ -788,12 +815,23 @@ function wood(t){
   ns.buffer=wood.buf; bp.type='bandpass'; bp.frequency.value=2600; bp.Q.value=1.5; g.gain.value=0.25;
   ns.connect(bp).connect(g).connect(out); ns.start(t);
 }
+// teléfono: que suene aunque el iPhone esté en silencio, y que la pantalla no se apague mientras suena
+function movilInicio(){
+  try{ if(navigator.audioSession) navigator.audioSession.type='playback'; }catch(e){}
+  const ios=/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  if(ios){ if(!movilInicio.a){ const sr=8000, n=sr/2, buf=new ArrayBuffer(44+n), v=new DataView(buf); const w=(o,t)=>{ for(let i=0;i<t.length;i++) v.setUint8(o+i,t.charCodeAt(i)); };
+      w(0,'RIFF'); v.setUint32(4,36+n,true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,sr,true); v.setUint32(28,sr,true); v.setUint16(32,1,true); v.setUint16(34,8,true); w(36,'data'); v.setUint32(40,n,true); for(let i=0;i<n;i++) v.setUint8(44+i,128);
+      const a=new Audio(URL.createObjectURL(new Blob([buf],{type:'audio/wav'}))); a.loop=true; a.setAttribute('playsinline',''); movilInicio.a=a; }
+    movilInicio.a.play().catch(()=>{}); }
+  try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>{ movilInicio.lock=l; }).catch(()=>{}); }catch(e){}
+}
+function movilFin(){ try{ movilInicio.a && movilInicio.a.pause(); }catch(e){} try{ movilInicio.lock && movilInicio.lock.release(); movilInicio.lock=null; }catch(e){} }
 function play(){
   if(playing){ stop(); return; }
   if(st.view!=='fijo' && !st.sel.size) return;
   if(st.cont && st.view!=='fijo' && st.pag){ st.pag=0; dibujar(); }
   try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ document.getElementById('estado').textContent='Este navegador no permite reproducir audio.'; return; }
-  playing=true; document.getElementById('play').textContent='■ Detener';
+  playing=true; document.getElementById('play').textContent='■ Detener'; movilInicio();
   // Motor por pulsos: se programa de a poco (120 ms adelante) para poder cambiar el tempo sin cortar.
   const evs=[]; for(const e of eventos(st.cells,true)) if(e.t==='n' && e.onset){ if(e.trip) for(let j=0;j<3;j++) evs.push({b:e.s/2+j/3}); else evs.push({c:e.s}); }
   eng={evs, L:st.bars*BPB(), bpb:BPB(), bpm:+document.getElementById('tempo').value, aT:ctx.currentTime+0.15, aB:-BPB(), nextB:-BPB(), ni:0, nLap:0, lap:0, bi:-1};
@@ -938,6 +976,7 @@ function recuperar(){ let d=null; try{ d=JSON.parse(localStorage.getItem('ae_est
   if(st.modo==='ciclo' && st.sel.size>MAXCICLO) st.sel=new Set([...st.sel].slice(0,MAXCICLO));
   return d.view==='fijo'?'fijo':'impro'; }
 document.addEventListener('click',()=>setTimeout(guardar,0)); document.addEventListener('change',()=>setTimeout(guardar,0));
+let rsT=0; addEventListener('resize',()=>{ clearTimeout(rsT); rsT=setTimeout(()=>{ const a=(document.getElementById('part').clientWidth||1000)<560; if(a!==dibujar._ang && st.cells.length) dibujar(); },150); });
 const intro=document.getElementById('intro');
 document.getElementById('infoBtn').addEventListener('click',()=>{ intro.showModal(); });
 document.getElementById('introOk').addEventListener('click',()=>{ intro.close(); });
