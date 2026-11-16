@@ -130,6 +130,12 @@ p.aviso.suave{background:transparent;color:var(--muted);border-left-color:var(--
 label.chk.off{opacity:.35;cursor:not-allowed}
 .hoja{position:relative}
 .cuenta{margin-left:auto;font:800 34px/1 var(--display,inherit);color:var(--naranja);background:var(--card);border:2px solid var(--naranja);border-radius:12px;padding:6px 16px;z-index:5}
+.largofila{display:flex;align-items:center;gap:8px}
+.tg.tgsm{width:38px;height:38px}
+.tg.tgsm svg{width:20px;height:20px}
+.modoseg{margin-top:18px}
+.ciclofila{display:flex;align-items:center;gap:10px;margin-top:10px}
+.ciclofila .cl{font-size:14px;color:var(--muted)}
 p.aviso{margin:4px 0 8px;padding:8px 12px;border-radius:8px;background:var(--naranja-soft);color:var(--naranja);font-weight:600;font-size:14px;border-left:3px solid var(--naranja)}
 .hoja.vacia{opacity:.3;filter:grayscale(1) blur(1.5px);pointer-events:none}
 .hoja{transition:opacity .2s,filter .2s}
@@ -169,22 +175,20 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
 
   <fieldset>
     <legend>Largo</legend>
-    <div class="selwrap"><select id="compases" aria-label="Cantidad de compases">
+    <div class="largofila"><div class="selwrap"><select id="compases" aria-label="Cantidad de compases">
       <option value="4">4 compases</option><option value="8">8 compases</option><option value="16" selected>16 compases</option><option value="32">32 compases</option><option value="cont">Continuo</option>
-    </select>
-    </div>
-    
+    </select></div>
+    <button class="tg tgsm" id="loop" aria-pressed="false" data-tip="Repetir al terminar" aria-label="Repetir al terminar"><svg viewBox="0 0 24 24"><path d="M5 11V9a3 3 0 0 1 3-3h10M15 3l3 3-3 3M19 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
 
-    <legend style="margin-top:12px">Silencios</legend>
-    <div class="seg" id="modo" role="group" aria-label="Modo de silencios">
-      <button data-v="azar" aria-pressed="true">Al azar</button><button data-v="ciclo">En ciclo</button>
+    <div class="seg modoseg" id="modo" role="group" aria-label="Forma de la improvisación">
+      <button data-v="azar" aria-pressed="true">Libre</button><button data-v="ciclo">Desplazamientos</button>
     </div>
     <div id="optAzar"></div>
     <div id="optCiclo" hidden>
-      <div class="fila"><span>Ciclo de</span>
+      <div class="ciclofila"><span class="cl">Ciclo de</span>
         <div class="seg" id="ciclo" role="group" aria-label="Largo del ciclo en negras">
           <button data-v="3" aria-pressed="true">3</button><button data-v="5">5</button><button data-v="7">7</button>
-        </div></div>
+        </div><span class="cl">negras</span></div>
     </div>
   </fieldset>
 
@@ -213,7 +217,6 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
       <button class="tg tgtxt" id="swing" aria-pressed="true">Swing</button>
       <div class="tgvol" id="metroBox"><button class="tg" id="metro" aria-pressed="true" aria-label="Metrónomo"><svg viewBox="0 0 24 24"><path d="M9.5 3h5l4 17H5.5zM8 18h8M12 15l4.5-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg></button><button class="volbtn" aria-label="Volumen del metrónomo" aria-expanded="false"><svg viewBox="0 0 12 12" width="10" height="10"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="volpop" hidden><input type="range" class="vol" id="vol_metro" min="0" max="100" value="80" aria-label="Volumen del metrónomo"><span class="volv">80</span></div></div>
       <div class="tgvol" id="notasBox"><button class="tg" id="notas" aria-pressed="true" aria-label="Notas"><svg viewBox="0 0 24 24"><ellipse cx="7" cy="17.6" rx="3.1" ry="2.3" transform="rotate(-22 7 17.6)" fill="currentColor"/><path d="M9.9 17V4.2c.6 2.4 3.6 3 3.6 6.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.6 13.4a3.4 3.4 0 0 1 0 4.6M18.4 11a7 7 0 0 1 0 9.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><button class="volbtn" aria-label="Volumen de las notas" aria-expanded="false"><svg viewBox="0 0 12 12" width="10" height="10"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="volpop" hidden><input type="range" class="vol" id="vol_notas" min="0" max="100" value="80" aria-label="Volumen de las notas"><span class="volv">80</span></div></div>
-      <button class="tg" id="loop" aria-pressed="false" data-tip="Repetir al terminar" aria-label="Repetir al terminar"><svg viewBox="0 0 24 24"><path d="M5 11V9a3 3 0 0 1 3-3h10M15 3l3 3-3 3M19 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </fieldset>
 </div>
@@ -272,7 +275,7 @@ const MAXCICLO=3, tope=()=>st.modo==='ciclo'?MAXCICLO:Infinity;
 function syncAll(){ document.querySelectorAll('details.grp').forEach(d=>d._sync&&d._sync());
   const lleno=st.sel.size>=tope();
   for(const k of Object.keys(U)){ const i=document.getElementById('u_'+k); if(!i) continue; const off=lleno && !st.sel.has(k); i.disabled=off; i.closest('label').classList.toggle('off',off); }
-  const av=document.getElementById('avisoCiclo'); if(av && !av._fijo){ av.hidden=!(st.modo==='ciclo' && lleno); av.textContent='En ciclo se usan hasta '+MAXCICLO+' unidades. Destildá una para elegir otra.'; }
+  const av=document.getElementById('avisoCiclo'); if(av && !av._fijo){ av.hidden=!(st.modo==='ciclo' && lleno); av.textContent='En desplazamientos se usan hasta '+MAXCICLO+' unidades. Destildá una para elegir otra.'; }
   document.querySelectorAll('#azarN button').forEach(b=>{ const off=+b.dataset.v>tope(); b.disabled=off; b.classList.toggle('apagado',off); }); }
 
 // ---------- generación ----------
@@ -810,7 +813,7 @@ seg('modo',v=>{st.modo=v;
   const av=document.getElementById('avisoCiclo'); av._fijo=false;
   if(v==='ciclo' && st.sel.size>MAXCICLO){ const orden=Object.keys(U).filter(k=>st.sel.has(k)), quedan=orden.slice(0,MAXCICLO), salen=orden.slice(MAXCICLO);
     st.sel=new Set(quedan); syncAll(); av._fijo=true; av.hidden=false;
-    av.textContent='En ciclo se usan hasta '+MAXCICLO+' unidades: se destildaron '+salen.map(k=>k==='tr'?'tresillo':U[k].g+' '+U[k].name.toLowerCase()).join(', ')+'.'; }
+    av.textContent='En desplazamientos se usan hasta '+MAXCICLO+' unidades: se destildaron '+salen.map(k=>k==='tr'?'tresillo':U[k].g+' '+U[k].name.toLowerCase()).join(', ')+'.'; }
   else syncAll(); document.getElementById('optAzar').hidden=v!=='azar'; document.getElementById('optCiclo').hidden=v!=='ciclo'; generar();});
 seg('ciclo',v=>{st.ciclo=+v;generar();});
 
