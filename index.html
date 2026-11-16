@@ -136,8 +136,23 @@ label.chk.off{opacity:.35;cursor:not-allowed}
 .modoseg{margin-top:18px}
 .ciclofila{display:flex;align-items:center;gap:10px;margin-top:10px}
 .ciclofila .cl{font-size:14px;color:var(--muted)}
-svg .metrica{fill:transparent;cursor:pointer}
+svg .metrica{fill:transparent;stroke:var(--naranja);stroke-opacity:.55;stroke-dasharray:3 2;cursor:pointer}
+svg .metricaFl{fill:var(--naranja);pointer-events:none}
 svg .metrica:hover{fill:color-mix(in srgb,var(--naranja) 14%,transparent)}
+.titulo{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.titulo h1{margin-right:2px}
+button.info{margin-top:18px;width:34px;height:34px;border-radius:50%;border:2px solid var(--naranja);background:var(--naranja-soft);color:var(--naranja);font:italic 700 19px Georgia,serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .15s}
+button.info:hover{transform:scale(1.08);background:var(--naranja);color:#fff}
+dialog.intro{max-width:680px;width:calc(100% - 32px);border:none;border-radius:14px;padding:0;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog.intro::backdrop{background:rgba(20,18,15,.45)}
+.introIn{padding:26px 30px 22px;max-height:82vh;overflow:auto;line-height:1.55;font-size:16px}
+.introIn h2{font-family:var(--display);font-size:24px;margin:0 0 12px}
+.introIn h3{font-family:var(--display);font-size:17px;margin:20px 0 6px;color:var(--azul)}
+.introIn p{margin:0 0 10px}
+.introIn ol{padding-left:22px;margin:0}
+.introIn ol>li{margin-bottom:8px}
+.introIn ul{padding-left:20px;margin:4px 0}
+.introPie{display:flex;justify-content:flex-end;margin-top:14px}
 p.aviso{margin:4px 0 8px;padding:8px 12px;border-radius:8px;background:var(--naranja-soft);color:var(--naranja);font-weight:600;font-size:14px;border-left:3px solid var(--naranja)}
 .hoja.vacia{opacity:.3;filter:grayscale(1) blur(1.5px);pointer-events:none}
 .hoja{transition:opacity .2s,filter .2s}
@@ -153,12 +168,36 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
   <span class="firma">ANDY KLIGMAN</span>
 </header>
 
-<h1>Improvisación con unidades rítmicas</h1>
+<div class="titulo"><h1>Improvisación con unidades rítmicas</h1><button class="info" id="infoBtn" aria-label="Para qué sirve y cómo usarla">i</button></div>
+<dialog id="intro" class="intro" aria-labelledby="introT">
+  <div class="introIn">
+  <h2 id="introT">Improvisación con unidades rítmicas</h2>
+  <p>Esta página genera improvisaciones rítmicas para leer y cantar, armadas solamente con las unidades rítmicas que elijas. Está pensada para <strong>nutrirte de ideas</strong>: descubrir cuánta variedad se puede sacar de muy pocos elementos, para después tener mucho más control sobre los motivos que usamos al tocar y más claro el abanico de posibilidades que tenemos a disposición. La idea es poder <strong>hacer mucho con poco</strong>.</p>
+  <p>Podés trabajar una sola unidad o conjuntos chicos de 2, 3 o 4. Lo que más cambia de una idea a otra es <strong>en qué lugar del compás</strong> cae la unidad (en qué pulso, y si es a tierra o a contratiempo), <strong>cuántas veces se repite</strong> y <strong>cuánto silencio dejamos</strong>.</p>
+  <p>Si elegiste más de una unidad, también cambia <strong>cómo se combinan esas unidades entre sí</strong>, además de cómo se combinan con los silencios.</p>
+  <h3>Cómo usarla</h3>
+  <ol>
+    <li>Elegí una o más unidades. Están agrupadas por cantidad de notas.</li>
+    <li>Elegí el largo y el modo de entrenamiento:
+      <ul><li><strong>Libre</strong> está pensado para una improvisación más continua y variada.</li>
+      <li><strong>Desplazamientos</strong> está pensado para entrenar exclusivamente desplazamientos.</li></ul>
+      Tocando la métrica (por default 4/4) podés pasarla a 5/4, 3/4 o 7/4, en los dos modos.</li>
+    <li>Usala como más te sirva:
+      <ul><li>sin reproducción, solo leyendo y cantando la línea;</li>
+      <li>reproduciéndola y marcando el ritmo mientras suena, con el cuerpo, con una sola nota, con una escala o sobre cambios de acorde;</li>
+      <li>o simplemente generando ritmos para usarlos en lo que quieras practicar.</li></ul></li>
+  </ol>
+  <h3>Después, lejos de la pantalla</h3>
+  <p>La idea principal es usar el entrenador con una selección de unidades durante un rato, para nutrirte de ideas que quizás no se te ocurrirían. Después la onda es apagar la pantalla e improvisar solo con el metrónomo, buscando generar esa variedad y riqueza rítmica que estuviste trabajando.</p>
+  <p>Si lo usás con frecuencia, vas a mejorar en el aspecto rítmico en general, pero para mejorar en la improvisación hay que improvisar, no leer. Por eso conviene que haya un espacio aparte donde practiques improvisar desde el ritmo, idealmente con las mismas unidades que hayas usado en tu jornada con el entrenador.</p>
+  <div class="introPie"><button class="btn prim" id="introOk">Empezar</button></div>
+  </div>
+</dialog>
+
 <div class="tabs" role="tablist" aria-label="Secciones">
   <button role="tab" id="tabImpro" aria-selected="true">Improvisación</button><button role="tab" id="tabFijo" aria-selected="false">Ritmo fijo</button>
 </div>
 <div id="vistaImpro">
-<p class="lead">Elegí con qué unidades querés improvisar, cuántos compases y cómo se reparten los silencios. Leé la línea y cantala. Con <strong>Reproducir</strong> escuchás el metrónomo y las notas para chequearte.</p>
 
 <div class="azar">
   <span class="azlbl">Elegir unidades al azar</span>
@@ -198,8 +237,6 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);font-si
 
 </div>
 <div id="vistaFijo" hidden>
-<p class="lead">Generá un ritmo y escuchalo en loop. Leelo y cantalo hasta que salga sin pensar. La idea es depender lo menos posible de la reproducción: podés desactivar el sonido de las notas cuando ya te lo hayas aprendido.</p>
-<p class="lead">La idea es que uses este ritmo durante un tiempo largo, ya sea que lo hagas con el cuerpo o en diferentes escalones de dificultad con el instrumento.</p>
 <div class="panel fijo">
   <fieldset>
     <legend>Loop</legend>
@@ -694,7 +731,7 @@ function dibujar(){
       el('line',{x1:x,x2:x,y1:y,y2:y+4*sp,stroke:'currentColor','stroke-width':fin?3:1.2},svg);
       if(fin) el('line',{x1:x-5,x2:x-5,y1:y,y2:y+4*sp,stroke:'currentColor','stroke-width':1.2},svg); }
     if(ln===0){ [[y+2*sp-1,BP],[y+4*sp+1,4]].forEach(([yy,t])=>{ el('text',{x:28,y:yy,'font-size':17,'font-weight':700,'font-family':'Georgia,serif',fill:'currentColor'},svg).textContent=t; });
-      if(st.view!=='fijo'){ const hit=el('rect',{x:22,y:y-6,width:22,height:4*sp+12,rx:4,class:'metrica'},svg); const tt=document.createElementNS(NS,'title'); tt.textContent='Cambiar el compás (4, 5, 3, 7)'; hit.appendChild(tt);
+      if(st.view!=='fijo'){ el('path',{d:`M${29},${y+4*sp+9} l4,4 l4,-4 z`,class:'metricaFl'},svg); const hit=el('rect',{x:22,y:y-6,width:22,height:4*sp+12,rx:4,class:'metrica'},svg); const tt=document.createElementNS(NS,'title'); tt.textContent='Cambiar el compás (4, 5, 3, 7)'; hit.appendChild(tt);
         hit.addEventListener('click',()=>{ const orden=[4,5,3,7]; setMetrica(orden[(orden.indexOf(BP)+1)%orden.length]); }); } }
   }
   if(false) for(const m of st.marks){ let p=m.pos; while(st.cells[p]==='R') p++; if(p<st.cells.length) el('text',{class:'lbl',x:X(p)-4,y:Y0(p)-28},svg).textContent=U[m.k].tag; }
@@ -901,6 +938,12 @@ function recuperar(){ let d=null; try{ d=JSON.parse(localStorage.getItem('ae_est
   if(st.modo==='ciclo' && st.sel.size>MAXCICLO) st.sel=new Set([...st.sel].slice(0,MAXCICLO));
   return d.view==='fijo'?'fijo':'impro'; }
 document.addEventListener('click',()=>setTimeout(guardar,0)); document.addEventListener('change',()=>setTimeout(guardar,0));
+const intro=document.getElementById('intro');
+document.getElementById('infoBtn').addEventListener('click',()=>{ intro.showModal(); });
+document.getElementById('introOk').addEventListener('click',()=>{ intro.close(); });
+intro.addEventListener('close',()=>{ try{ localStorage.setItem('ae_intro','1'); }catch(e){} });
+intro.addEventListener('click',e=>{ if(e.target===intro) intro.close(); });
+try{ if(!localStorage.getItem('ae_intro')) intro.showModal(); }catch(e){ intro.showModal(); }
 const vistaInicial=recuperar();
 buildChecks(); syncAll(); actLoop(); pintarCiclo();
 if(vistaInicial==='fijo') setVista('fijo'); else generar();
