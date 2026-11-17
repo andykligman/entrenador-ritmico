@@ -51,217 +51,155 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .demo{border-left:3px solid var(--naranja);padding:4px 0 4px 16px;margin-top:30px}
 .demo ul{margin:6px 0 12px;padding-left:20px}
 
-/* Alumno */
-.alumno{max-width:1080px;margin:0 auto;padding:0 28px 90px}
+/* Alumno: camino a la izquierda, video a la derecha (arriba en el celular) */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,46%);gap:0;max-width:1440px;margin:0 auto}
+.alumno{padding:0 40px 120px;min-width:0}
 .alumno h2{font-size:20px;margin:0 0 14px}
+.panel-video{position:sticky;top:0;align-self:start;height:100vh;padding:24px 28px 24px 0;display:flex;flex-direction:column;gap:10px}
+.pv-marco{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--linea)}
+.pv-marco iframe,.pv-marco #yt{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pv-titulo{margin:0;font-family:var(--display);font-weight:500;font-size:15px;color:var(--gris)}
 
-/* Hero */
-.hero{padding:26px 0 8px;max-width:760px}
+/* Encabezado */
+.hero{padding:28px 0 6px}
 .hero-prog{margin:0;color:var(--gris);font-size:15px;display:flex;flex-wrap:wrap;gap:4px 16px}
 .hero-prog span{color:var(--tinta)}
-.hero h1{font-size:clamp(32px,6vw,46px);margin:4px 0 16px;letter-spacing:-.02em}
-.estado{display:grid;gap:2px;padding-left:16px;border-left:4px solid var(--azul);margin-bottom:24px}
-.estado strong{font-family:var(--display);font-weight:600;font-size:19px;color:var(--azul-txt)}
+.hero h1{font-size:clamp(30px,5vw,42px);margin:4px 0 14px;letter-spacing:-.02em}
+.estado{display:grid;gap:2px;padding-left:14px;border-left:4px solid var(--azul);margin-bottom:20px}
+.estado strong{font-family:var(--display);font-weight:600;font-size:18px;color:var(--azul-txt)}
 .estado span{color:var(--gris);font-size:16px}
 .estado-meterle{border-left-color:var(--oxido)} .estado-meterle strong{color:var(--oxido-txt)}
 .estado-adelantado,.estado-m2{border-left-color:var(--naranja)} .estado-adelantado strong,.estado-m2 strong{color:var(--naranja)}
 .estado-pausa{border-left-color:var(--linea)} .estado-pausa strong{color:var(--gris)}
-
-/* Tira de clases */
 .tira{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .tramo{display:grid;gap:6px;min-width:0;align-content:start}
-.barra-tramo{height:8px;border-radius:999px;background:var(--sup2);overflow:hidden}
+.barra-tramo{height:6px;border-radius:999px;background:var(--sup2);overflow:hidden}
 .barra-tramo span{display:block;height:100%;width:calc(var(--lleno) * 100%);background:var(--tinta);border-radius:999px}
 .tramo.prox .barra-tramo span{background:var(--naranja)}
 .tramo.prox.meterle .barra-tramo span{background:var(--oxido)}
-.tramo-txt{display:flex;align-items:center;gap:3px;font-family:var(--display);font-weight:500;font-size:13px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tramo-txt svg{width:14px;height:14px;flex:none}
-.tramo.tuvo .tramo-txt{color:var(--tinta)}
-.tramo.prox .tramo-txt{color:var(--tinta);font-weight:600}
-.tramo-sub{font-size:12.5px;color:var(--naranja);margin-top:-4px;font-weight:600}
+.tramo-txt{display:flex;align-items:center;gap:3px;font-family:var(--display);font-weight:500;font-size:12.5px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tramo-txt svg{width:13px;height:13px;flex:none}
+.tramo.tuvo .tramo-txt,.tramo.prox .tramo-txt{color:var(--tinta)}
+.tramo.prox .tramo-txt{font-weight:600}
+.tramo-sub{font-size:12px;color:var(--naranja);margin-top:-4px;font-weight:600}
 .tramo.meterle .tramo-sub{color:var(--oxido-txt)}
 .tira.animar .barra-tramo span{animation:llenar .9s cubic-bezier(.3,.7,.2,1) both}
-.tira.animar .tramo:nth-child(2) span{animation-delay:.12s}.tira.animar .tramo:nth-child(3) span{animation-delay:.24s}
-.tira.animar .tramo:nth-child(4) span{animation-delay:.36s}.tira.animar .tramo:nth-child(5) span{animation-delay:.48s}
 @keyframes llenar{from{width:0}}
+.clase-hecha{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:15px}
+.clase-hecha p{margin:0;width:100%;font-weight:600}
 
-/* Nota y tareas de Andy */
-.nota{margin:24px 0 0;padding:14px 18px;background:var(--naranja-claro);border-left:3px solid var(--naranja);border-radius:0 var(--radio-m) var(--radio-m) 0;max-width:760px}
+.nota{margin:22px 0 0;padding:14px 18px;background:var(--naranja-claro);border-left:3px solid var(--naranja);border-radius:0 var(--radio-m) var(--radio-m) 0}
 .nota p{margin:0}
 .nota cite{display:block;font-style:normal;font-size:14px;color:var(--naranja);font-weight:600;margin-top:6px}
-.de-andy{margin-top:26px;max-width:760px}
+.de-andy{margin-top:24px}
 .extra{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:var(--sup);border-radius:var(--radio-m);margin-bottom:8px;cursor:pointer;border:1px solid var(--naranja)}
 .extra input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--naranja);flex:none}
 
-/* Ahora */
-.ahora{margin-top:34px}
-.ahora-card{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0;background:var(--sup);border-radius:14px;overflow:hidden;border:1px solid var(--linea)}
-.ahora-mini{position:relative;display:block;aspect-ratio:16/9;background:#000;overflow:hidden}
-.ahora-mini img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85;transition:opacity .2s}
-.ahora-mini:hover img{opacity:1}
-.ahora-mini span{position:absolute;inset:0;display:grid;place-items:center}
-.ahora-mini span svg{width:58px;height:58px;padding:14px 12px 14px 16px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff}
-.ahora-info{padding:22px 24px;display:flex;flex-direction:column;align-items:flex-start}
-.ahora-card:not(:has(.ahora-mini)){grid-template-columns:1fr}
-.ahora-etq{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin:0 0 6px;font-size:14.5px;color:var(--gris)}
-.ahora-etq span{font-weight:600;color:var(--naranja)}
-.ahora-etq span.urg{color:var(--oxido-txt)}
-.ahora-card h3{font-size:23px;line-height:1.2;margin:0 0 8px}
-.ahora-txt{margin:0 0 12px;color:#C9CDD5;font-size:16px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-.ahora-entrega{display:flex;align-items:center;gap:6px;margin:0 0 16px;font-size:15px;color:var(--gris)}
-.ahora-entrega svg{width:17px;height:17px}
-.ahora-info .primario{margin-top:auto}
-.despues{margin-top:16px}
-.despues h3{font-size:15px;font-family:var(--sans);font-weight:600;color:var(--gris);margin:0 0 6px}
-.clase-hecha{margin:24px 0 0;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
-.clase-hecha p{margin:0;width:100%;font-weight:600}
-
-/* Lista del módulo, como "Todos los contenidos" */
-.titulo-contenidos{margin-top:44px!important}
-.modulo-lista{background:var(--sup);border-radius:14px;border:1px solid var(--linea);padding:6px 0 10px}
-.mod-cab{display:flex;gap:16px;align-items:center;padding:16px 20px 12px}
-.mod-num{width:40px;height:40px;border-radius:50%;background:var(--sup2);display:grid;place-items:center;font-family:var(--display);font-weight:600;flex:none}
-.mod-cab h2{font-size:17px;margin:0 0 4px;font-weight:500}
-.mod-cab p{margin:0;display:flex;align-items:center;gap:10px}
-.pct{font-weight:600;font-size:14px}
-.mod-barra{width:140px;height:4px;border-radius:999px;background:var(--sup2);overflow:hidden;display:inline-block}
-.mod-barra span{display:block;height:100%;background:var(--tinta)}
-.grupo{padding:8px 12px 4px}
-.grupo-cab{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 8px 6px;border-top:1px solid var(--linea)}
-.grupo:first-of-type .grupo-cab{border-top:0}
-.grupo-cab h3{font-size:15.5px;font-weight:600;color:var(--tinta)}
-.grupo-cab span{font-size:14px;color:var(--gris)}
-.grupo.cerrada .grupo-cab h3{color:var(--gris)}
-.ver-pasos{margin:2px 0 8px 8px;font-size:15px}
-.filas{display:grid;gap:2px;padding-bottom:6px}
-.fila{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:8px;border-radius:10px}
-.fila:hover{background:var(--sup2)}
-.fila.actual{background:var(--sup2);box-shadow:inset 3px 0 0 var(--naranja)}
-.fila-t{flex:1;min-width:0}
-.fila-titulo{display:block;font-size:16px;line-height:1.3}
-.fila-sub{display:block;font-size:14px;color:var(--gris);margin-top:2px}
-.fila-sub.oxido{color:var(--oxido-txt);font-weight:600}
-.fila>svg{width:18px;height:18px;color:var(--gris);flex:none}
-.fila-chica{background:var(--sup);margin-bottom:6px;border:1px solid var(--linea)}
-.aca{font-size:12.5px;font-weight:600;color:#1B1208;background:var(--naranja);padding:2px 9px;border-radius:999px;white-space:nowrap}
-.mini{position:relative;flex:none;width:128px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#26324B,#1B1C20)}
-.mini img{width:100%;height:100%;object-fit:cover;display:block}
-.mini-n{position:absolute;left:6px;bottom:5px;font-family:var(--display);font-weight:600;font-size:12px;background:rgba(0,0,0,.65);padding:1px 7px;border-radius:999px;color:#fff}
-.mini-placa{display:grid;place-items:center;color:var(--azul-txt)}
-.mini-placa svg{width:26px;height:26px}
-.marca-est{width:26px;height:26px;border-radius:50%;border:2px solid #4A4D55;display:grid;place-items:center;flex:none;color:#fff}
-.marca-est svg{width:16px;height:16px}
-.marca-est.est-listo,.marca-est.est-casi{background:var(--azul);border-color:var(--azul)}
-.marca-est.est-cuesta{border-color:var(--oxido);color:var(--oxido-txt)}
-.pie{margin-top:30px;color:var(--gris);font-size:15px}
-
-/* Clase: video a la izquierda, lista a la derecha */
-body.con-hoja{overflow:hidden}
-.leccion{position:fixed;inset:0;z-index:20;background:var(--fondo);display:flex;flex-direction:column;animation:aparecer .18s ease both}
-@keyframes aparecer{from{opacity:0}}
-.lec-barra{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid var(--linea);background:var(--sup)}
-.volver{display:flex;align-items:center;gap:8px;font-weight:600;padding:6px 4px}
-.volver svg{width:20px;height:20px}
-.lec-nav{display:flex;gap:8px}
-.nav-btn{width:40px;height:40px;border-radius:8px;background:var(--sup2);display:grid;place-items:center}
-.nav-btn svg{width:16px;height:16px}
-.nav-btn:disabled{opacity:.35;cursor:default}
-.lec-grid{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
-.lec-main{overflow:auto;padding:24px 40px 60px}
-.lec-main>*{max-width:820px;margin-left:auto;margin-right:auto}
-.lec-lado{overflow:auto;border-left:1px solid var(--linea);background:var(--sup);padding:10px 10px 40px}
-.lat-etapa{margin:14px 8px 6px;font-size:13.5px;color:var(--gris);font-weight:600}
-.lat-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:8px;border-radius:10px}
-.lat-item:hover{background:var(--sup2)}
-.lat-item.actual{background:var(--sup2)}
-.lat-item .mini{width:104px}
-.lat-t{flex:1;min-width:0;font-size:14.5px;line-height:1.3}
-.lat-t small{display:block;color:var(--naranja);font-weight:600;font-size:12.5px}
-.video{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin-bottom:20px}
-.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1}
-.video-fallback{position:absolute;inset:0;display:grid;place-items:center;color:#fff;text-decoration:none}
-.video-fallback img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
-.video-fallback span{position:relative;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.7);padding:10px 16px;border-radius:999px;font-weight:600}
-.video-fallback svg{width:18px;height:18px}
-.lec-etapa{margin:0;font-size:14px;color:var(--gris)}
-.lec-cab h2{font-size:26px;margin:2px 0 10px}
-.lec-chips{display:flex;flex-wrap:wrap;gap:6px}
+/* El camino */
+.camino{position:relative;margin-top:34px;padding-bottom:10px}
+.trazo{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.trazo-base{fill:none;stroke:#3A3D45;stroke-width:3;stroke-dasharray:2 9;stroke-linecap:round}
+.trazo-hecho{fill:none;stroke:var(--naranja);stroke-width:4;stroke-linecap:round;opacity:.9}
+.etapa-label{position:relative;z-index:1;margin:30px 0 12px 64px;background:var(--fondo);padding:4px 10px 4px 0;width:max-content;max-width:calc(100% - 64px)}
+.etapa-label:first-of-type{margin-top:6px}
+.etapa-label h3{font-size:13.5px;font-family:var(--sans);font-weight:600;color:var(--gris);margin:0}
+.etapa-label p{margin:0;font-size:13.5px;color:#6E737D}
+.nodo{position:relative;margin:0 0 6px calc(var(--ola))}
+.nodo-fila{display:flex;align-items:center;gap:14px}
+.punto{position:relative;z-index:1;width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:var(--sup2);border:2px solid #3A3D45;color:var(--gris);font-family:var(--display);font-weight:600;font-size:15px;transition:transform .15s}
+.punto svg{width:22px;height:22px}
+.punto:hover{transform:scale(1.06)}
+.est-listo .punto,.est-casi .punto{background:var(--tinta);border-color:var(--tinta);color:#111}
+.est-cuesta .punto{border-color:var(--oxido);color:var(--oxido-txt);background:var(--oxido-claro)}
+.nodo-tit{text-align:left;padding:6px 4px;display:grid;gap:1px}
+.nodo-tit span{font-size:16.5px;line-height:1.3}
+.est-listo .nodo-tit span,.est-casi .nodo-tit span{color:var(--gris)}
+.nodo-tit small{font-size:14px;color:var(--gris)}
+.nodo-tit small.oxido{color:var(--oxido-txt);font-weight:600}
+.nodo.abierto{margin:14px 0 22px}
+.nodo.abierto .punto{width:58px;height:58px;font-size:18px;background:var(--naranja);border-color:var(--naranja);color:#1B1208;box-shadow:0 0 0 7px rgba(232,131,79,.18)}
+.nodo.abierto.est-listo .punto,.nodo.abierto.est-casi .punto{background:var(--naranja);border-color:var(--naranja)}
+.nodo.abierto .nodo-tit span{font-family:var(--display);font-weight:600;font-size:22px;color:var(--tinta);line-height:1.2}
+.tarjeta{position:relative;z-index:1;margin:12px 0 0 0;background:var(--sup);border:1px solid var(--linea);border-radius:14px;padding:20px 22px 22px;animation:abrir .25s cubic-bezier(.2,.8,.3,1) both}
+@keyframes abrir{from{opacity:0;transform:translateY(-6px)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chips:empty{display:none}
 .chip{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--azul-claro);color:var(--azul-txt);white-space:nowrap}
 .chip svg{width:15px;height:15px}
 .chip-oxido{background:var(--oxido-claro);color:var(--oxido-txt)}
-.chip-ok{background:var(--azul);color:#fff}
-.chip-ok svg{width:14px;height:14px}
-.bloque{margin-top:24px}
-.bloque h3{font-size:17px;margin:0 0 8px}
-.bloque>p{margin:0 0 10px;color:#D6D9DF}
-.bloque a{color:var(--azul-txt)}
+.consigna p{margin:0 0 10px;color:#D6D9DF}
+.consigna strong{color:var(--tinta)}
 .reglas{margin:0 0 12px;padding-left:22px;color:#D6D9DF}
 .reglas li{margin:5px 0}
-.material{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
-.recurso{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--sup);border-radius:10px;text-decoration:none;color:var(--tinta)!important;font-weight:600;border:1px solid var(--linea)}
-a.recurso:hover{border-color:#4A4D55}
-.recurso small{display:block;font-weight:400;color:var(--gris);font-size:14px;margin-top:1px}
-.ico{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--sup2);color:var(--gris)}
-.ico svg{width:17px;height:17px}
-.ico.v{background:var(--oxido-claro);color:var(--oxido-txt)}
-.ico.d{background:var(--azul-claro);color:var(--azul-txt)}
-.ico.h{background:#3A1E14;color:#FF7A45}
-.recurso.pendiente{color:var(--gris)!important;font-weight:500;background:transparent;border-style:dashed}
-.accion{background:var(--sup);border:1px solid var(--linea);border-radius:12px;padding:18px}
-.accion h3{font-size:19px;margin-bottom:2px}
-.accion>.suave{margin:0 0 12px}
+.link-seek{display:inline-flex;align-items:center;gap:4px;color:var(--azul-txt);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.link-seek svg{width:14px;height:14px}
+.material{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px}
+.mat{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;background:var(--sup2);border:1px solid var(--linea);border-radius:10px;color:var(--tinta)!important;text-decoration:none;font-weight:600;font-size:15px;text-align:left}
+.mat:hover{border-color:#5A5E68}
+.mat svg{width:17px;height:17px;flex:none;color:var(--naranja)}
+a.mat svg{color:var(--azul-txt)}
+.mat small{display:block;font-weight:400;color:var(--gris);font-size:13px}
+.pregunta{margin-top:18px;padding-top:16px;border-top:1px solid var(--linea)}
+.pregunta h4{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 10px}
 .ops{display:grid;gap:8px}
 .op{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:10px;border:1.5px solid var(--linea);background:var(--sup2);font-weight:600;font-size:16px;line-height:1.3;color:var(--tinta)}
 .op:hover{border-color:#5A5E68}
 .op-punto{width:18px;height:18px;border-radius:50%;border:2px solid #5A5E68;flex:none}
-.op.sel{border-color:var(--azul);background:var(--azul-velo)}
-.op.sel .op-punto{border:6px solid var(--azul-txt)}
+.op.sel{border-color:var(--tinta);background:#2A2C32}
+.op.sel .op-punto{border:6px solid var(--tinta)}
 .op.sel.nivel-cuesta{border-color:var(--oxido);background:var(--oxido-claro)}
 .op.sel.nivel-cuesta .op-punto{border-color:var(--oxido-txt)}
 .respuesta{margin-top:12px;padding:12px 14px;border-radius:8px;background:var(--azul-velo);border-left:3px solid var(--azul)}
 .respuesta.nivel-cuesta{background:var(--oxido-claro);border-left-color:var(--oxido)}
 .respuesta p{margin:0 0 4px}
-.respuesta a{display:inline-block;margin-top:2px}
-.apoyo{margin-top:16px;padding:14px;border-radius:10px;background:var(--naranja-claro)}
+.apoyo{margin-top:16px;padding:14px 16px;border-radius:10px;background:var(--naranja-claro)}
 .apoyo h4,.dificultades h4{margin:0 0 6px;font-family:var(--display);font-weight:600;font-size:15px}
-.apoyo>p{margin:0 0 10px;font-size:15.5px;color:#D6D9DF}
-.apoyo-item{margin-top:8px}
-.apoyo-video{display:inline-flex;align-items:center;gap:6px;margin:6px 0 0 4px;font-size:14.5px;font-weight:600}
-.apoyo-video svg{width:15px;height:15px}
-.dificultades{margin-top:16px;padding-top:12px;border-top:1px solid var(--linea)}
+.apoyo>p{margin:0 0 6px;font-size:15.5px;color:#D6D9DF}
+.apoyo-item{padding-top:10px}
+.apoyo-t{margin:0;font-weight:600}
+.apoyo-c{margin:0 0 6px;font-size:14.5px;color:var(--gris)}
+.apoyo-links{display:flex;flex-wrap:wrap;gap:8px}
+.dificultades{margin-top:16px}
 .dif{padding:10px 0;border-top:1px solid var(--linea)}
 .dif:first-of-type{border-top:0;padding-top:2px}
 .dif p{margin:0 0 4px;color:#D6D9DF}
 .dif .dif-q{font-weight:600;color:var(--tinta)}
 .dif a{display:inline-block;margin-right:14px}
+.seguir{margin-top:18px}
+.seguir .primario{display:inline-grid;grid-template-columns:auto auto;align-items:center;gap:0 12px;text-align:left;padding:12px 20px}
+.seguir .primario span{font-size:17px}
+.seguir .primario small{grid-row:2;font-weight:500;font-size:13.5px;color:#4A4D55;max-width:320px}
+.seguir .primario svg{grid-row:1/3;grid-column:2;width:20px;height:20px}
 .standards{display:flex;flex-wrap:wrap;gap:8px}
 .chip-op{padding:8px 14px;border-radius:999px;border:1.5px solid var(--linea);background:var(--sup2);font-weight:500;font-size:15px;color:var(--tinta)}
 .chip-op:hover{border-color:#5A5E68}
 .chip-op.sel{background:var(--tinta);border-color:var(--tinta);color:#111;font-weight:600}
 .otro-standard{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .otro-standard input{flex:1 1 140px;min-width:0;width:100%;padding:8px 14px;border:1.5px solid var(--linea);border-radius:999px;background:var(--sup2);color:var(--tinta)}
+.meta{position:relative;display:flex;align-items:center;gap:14px;margin:26px 0 0 0}
+.meta span{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:2px dashed #3A3D45;color:#6E737D;background:var(--fondo);position:relative;z-index:1}
+.meta span svg{width:20px;height:20px}
+.meta p{margin:0;color:#6E737D;font-family:var(--display);font-weight:500}
+.pie{margin-top:34px;color:var(--gris);font-size:15px}
 
-@media (max-width:900px){
-  .lec-grid{grid-template-columns:1fr}
-  .lec-lado{display:none}
-  .lec-main{padding:0 0 60px}
-  .lec-main>.video{border-radius:0;margin-bottom:16px}
-  .lec-main>.lec-cab,.lec-main>.lec-cuerpo{padding:0 18px}
-  .lec-barra{padding:10px 14px}
-  .ahora-card{grid-template-columns:1fr}
+@media (max-width:999px){
+  .layout{display:flex;flex-direction:column-reverse}
+  .panel-video{position:sticky;top:0;z-index:5;height:auto;padding:0;background:var(--fondo);gap:0;width:100%}
+  .pv-marco{border-radius:0;border:0;border-bottom:1px solid var(--linea)}
+  .pv-titulo{padding:6px 16px;font-size:13.5px;border-bottom:1px solid var(--linea)}
+  .alumno{padding:0 18px 100px}
 }
 @media (max-width:560px){
-  .alumno{padding:0 16px 80px}
   .tira{gap:4px}
-  .tramo-txt{font-size:11.5px}
-  .ahora-info{padding:18px}
-  .ahora-card h3{font-size:21px}
-  .mini{width:96px}
-  .fila{gap:10px;padding:8px 6px}
-  .grupo{padding:6px 6px 2px}
-  .mod-cab{padding:14px 14px 10px}
-  .material{grid-template-columns:1fr}
-  .lec-cab h2{font-size:22px}
+  .tramo-txt{font-size:11px}
+  .nodo{margin-left:calc(var(--ola) * .5)}
+  .nodo.abierto{margin-left:0}
+  .tarjeta{padding:16px 16px 18px;margin-left:-4px;margin-right:-4px}
+  .etapa-label{margin-left:58px;max-width:calc(100% - 58px)}
+  .nodo.abierto .nodo-tit span{font-size:19px}
+  .punto{width:42px;height:42px}
+  .nodo.abierto .punto{width:50px;height:50px}
 }
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
@@ -354,6 +292,19 @@ const DOC_ENTRENAMIENTO = 'https://docs.google.com/document/d/19vNF5KkcPosVXsBOh
 const AULA = 'https://hotmart.com/es/club/andras-martan-kligman';
 const DOC_CUELLO_1 = 'https://docs.google.com/document/d/12QpaeG62ULfvR2EB7ahvXKqRr09hR8r3YjRi9CnBdEI/edit';
 const DOC_CUELLO_2 = 'https://docs.google.com/document/d/1MR6C2vRlCcHo77cJIdyyvjnuxBjdiqJ21zWZfCvulxU/edit';
+
+/* Títulos de los videos (para el reproductor) */
+const VIDEOS = {
+  '2DfcA6_JdW4': 'Posiciones de arpegios por set de cuerdas',
+  'GLSfAS-RnhQ': 'Integración: práctica a tempo y skipping',
+  'TylWJrfPxu0': 'Ejercitación Nº1: Enlaces de arpegios',
+  'PqJhew7HiLs': 'Cómo ordenar las posiciones',
+  '86aNkZzca64': 'Ejercitación Nº2: Anticipaciones armónicas',
+  '_GkCOK9r3Wg': 'Ejercitación Nº3: Superposiciones de arpegios',
+  '-M5xF9Crru8': 'Herramienta iReal: contrabajo acompañante',
+  'c_aQIVXsF9M': 'Cuello de botella #1: anticipar los cambios',
+  'JHJhLmtCsno': 'Cuello de botella #2: notas por cuerda',
+};
 
 /* Standards para elegir. pdf: link a la parte para trabajar (vacío = Andy la manda por WhatsApp) */
 const STANDARDS = [
@@ -871,26 +822,22 @@ function aviso(t, error) {
   clearTimeout(el._t); if (!error && t === 'Guardado') el._t = setTimeout(() => el.classList.remove('visible'), 1600);
 }
 
-/* ---------------- Vista del alumno ----------------
-   Estética del Área de Miembros (fondo oscuro, miniaturas, módulo numerado con porcentaje,
-   clase con video a la izquierda y lista a la derecha) + la lógica del mapa:
-   qué toca ahora, cómo te fue, y ayuda según cómo le va. */
+/* ---------------- Vista del alumno: el camino ----------------
+   Un camino dibujado de punta a punta. El paso actual está abierto en el camino:
+   consigna, material y "¿Cómo te fue?". Al responder, aparece "Seguir" y el camino avanza.
+   El video va al costado (arriba en el celular), uno por vez: cambia solo al avanzar,
+   y los links a minutos del video lo adelantan ahí mismo. */
 
 const ICONO = {
   video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
   doc: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 13h6M10 16.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   enviar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-7-6 15-2.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  cerrar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
-  flecha: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  atras: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14M18 5l-8 7 8 7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
-  next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5v14M6 5l8 7-8 7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
-  disco: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></svg>',
+  abajo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 const ytId = url => { const m = String(url || '').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/); return m ? m[1] : null; };
-const esVideo = url => !!ytId(url);
-const miniatura = id => `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
+const ytT = url => { const m = String(url || '').match(/[?&](?:t|start)=(\d+)/); return m ? +m[1] : 0; };
+const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
 function titularEstado(e) {
   return { bien: 'Vas bien', meterle: 'Hay que meterle un poco', adelantado: 'Vas adelantado', pausa: 'Sin apuro', m2: 'Ya estás en el módulo 2' }[e.tipo];
@@ -909,16 +856,12 @@ function bajadaEstado(st, e) {
   return `Para ${proxima} te ${e.faltan.length === 1 ? 'queda' : 'quedan'} ${e.faltan.length} ${e.faltan.length === 1 ? 'paso' : 'pasos'}.`;
 }
 
-/* Tira de clases: cada tramo es la preparación para la clase siguiente */
 function tiraClases(st, e, animar) {
   const p = posicion(st);
   const tramos = ['Clase 1', 'Clase 2', 'Clase 3', 'Clase 4', 'Módulo 2'];
   return `<ol class="tira ${animar && !reduceMotion ? 'animar' : ''}" aria-label="Tu camino en el módulo">
     ${tramos.map((t, i) => {
-      const n = i + 1;
-      const lleno = clamp(p - i, 0, 1);
-      const tuvo = n <= (st.clase || 0) && n <= 4;
-      const prox = n === e.k;
+      const n = i + 1, lleno = clamp(p - i, 0, 1), tuvo = n <= (st.clase || 0) && n <= 4, prox = n === e.k;
       return `<li class="tramo ${tuvo ? 'tuvo' : prox ? 'prox' : ''} ${prox && e.tipo === 'meterle' ? 'meterle' : ''}">
         <span class="barra-tramo"><span style="--lleno:${lleno}"></span></span>
         <span class="tramo-txt">${tuvo ? ICONO.check : ''}${t}</span>
@@ -928,10 +871,15 @@ function tiraClases(st, e, animar) {
   </ol>`;
 }
 
-/* Texto con formato mínimo: líneas "- " como lista, **negrita** y [texto](link) */
+/* Texto con formato mínimo. Los links a YouTube se vuelven botones que mueven el video de al lado. */
+function linkHTML(texto, url) {
+  const id = ytId(url);
+  if (id) return `<button class="link-seek" data-seek="${id}:${ytT(url)}">${ICONO.video}${texto}</button>`;
+  return `<a href="${url}" target="_blank" rel="noopener">${texto}</a>`;
+}
 function enLinea(l) {
   return esc(l).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, u) => linkHTML(t, u));
 }
 function textoHTML(t) {
   const out = []; let lista = [];
@@ -939,249 +887,219 @@ function textoHTML(t) {
   String(t || '').split('\n').forEach(l => { if (l.startsWith('- ')) lista.push(l.slice(2)); else { cerrar(); if (l.trim()) out.push(`<p>${enLinea(l)}</p>`); } });
   cerrar(); return out.join('');
 }
-function primerParrafo(t) { return String(t || '').split('\n')[0].replace(/\*\*/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); }
 
 function opcionesProgreso(p) { return p.progreso || (p.sinProgreso ? PROGRESO_SIMPLE : PROGRESO_BASE); }
 function opcionElegida(st, p) {
   const pr = st.prog[p.id]; if (!pr) return null;
   return opcionesProgreso(p).find(o => o.id === pr.op) || opcionesProgreso(p).find(o => o.nivel === pr.como) || null;
 }
-
-/* Lo que se muestra depende de cómo le está yendo: cada opción de progreso dice qué ayuda mostrar
-   (muestra: ['apoyo', idDeDificultad...]). Sin esa lista, las dificultades aparecen solo con "me cuesta". */
 function ayudaPara(p, sel) {
   if (!sel) return { apoyo: false, difs: [] };
   const probs = p.problemas || [];
   if (sel.muestra) return { apoyo: !!p.apoyo && sel.muestra.includes('apoyo'), difs: probs.filter(q => sel.muestra.includes(q.id)) };
   return { apoyo: false, difs: sel.nivel === 'cuesta' ? probs : [] };
 }
-function recursoHTML(r) {
-  if (!r.url) return `<span class="recurso pendiente"><span class="ico">${ICONO.video}</span><span>${esc(r.t)}<small>En preparación</small></span></span>`;
-  const v = esVideo(r.url);
-  return `<a class="recurso" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="ico ${v ? 'v' : 'd'}">${v ? ICONO.video : ICONO.doc}</span><span>${esc(r.t)}${r.sub ? `<small>${esc(r.sub)}</small>` : ''}</span></a>`;
+
+/* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
+function materialHTML(p) {
+  const rs = (p.recursos || []).filter(r => r.url);
+  if (!rs.length) return '';
+  return `<div class="material">${rs.map(r => {
+    const id = ytId(r.url);
+    if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t)}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+    return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
+  }).join('')}</div>`;
 }
 function apoyoHTML(p) {
   return `<div class="apoyo"><h4>${esc(p.apoyo.titulo)}</h4>${p.apoyo.texto ? `<p>${esc(p.apoyo.texto)}</p>` : ''}
-    ${p.apoyo.items.map(i => `<div class="apoyo-item">${recursoHTML({ t: i.t, url: i.url, sub: i.cuando })}${i.video ? `<a class="apoyo-video" href="${esc(i.video)}" target="_blank" rel="noopener">${ICONO.video}Ver video</a>` : ''}</div>`).join('')}</div>`;
+    ${p.apoyo.items.map(i => `<div class="apoyo-item"><p class="apoyo-t">${esc(i.t)}</p><p class="apoyo-c">${esc(i.cuando)}</p>
+      <div class="apoyo-links">${i.video ? `<button class="mat" data-seek="${ytId(i.video)}:0">${ICONO.video}<span>Ver el video</span></button>` : ''}<a class="mat" href="${esc(i.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>Leer el documento</span></a></div></div>`).join('')}</div>`;
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';
   return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">${esc(q.q)}</p><p>${esc(q.fix)}</p>
-    ${q.url ? `<a href="${esc(q.url)}" target="_blank" rel="noopener">Ver esa parte del video</a>` : ''}
+    ${q.url ? linkHTML('Ver esa parte del video', esc(q.url)) : ''}
     ${q.doc ? `<a href="${esc(q.doc.url)}" target="_blank" rel="noopener">${esc(q.doc.t)}</a>` : ''}</div>`).join('')}</div>`;
 }
 
 function standardHTML(st) {
   const elegido = st.standard || '';
   const item = STANDARDS.find(x => x.t === elegido);
-  return `<div class="bloque accion"><h3>Tu standard</h3>
+  return `<div class="pregunta"><h4>¿Con qué tema vas a trabajar?</h4>
     <div class="standards" role="radiogroup" aria-label="Standards">${STANDARDS.map(x => `<button role="radio" aria-checked="${x.t === elegido}" class="chip-op ${x.t === elegido ? 'sel' : ''}" data-standard="${esc(x.t)}">${esc(x.t)}</button>`).join('')}</div>
     <form class="otro-standard" data-form-standard="1"><input name="otro" aria-label="Otro tema" placeholder="Otro tema" value="${item || !elegido ? '' : esc(elegido)}"><button class="secundario">Elegir este</button></form>
     ${elegido ? `<div class="respuesta"><p>Elegiste <strong>${esc(elegido)}</strong>.</p>${item && item.pdf ? `<a href="${esc(item.pdf)}" target="_blank" rel="noopener">Descargar la parte para trabajar (PDF)</a>` : '<p class="suave chico">Andy te pasa la parte para trabajar.</p>'}</div>` : ''}
   </div>`;
 }
 
-function comoTeFueHTML(st, p) {
+function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
-  return `<div class="bloque accion" id="como-te-fue"><h3>¿Cómo te fue?</h3>
-    <p class="suave chico">Elegí la que más se parezca y queda marcado. Para desmarcar, tocala de nuevo.</p>
+  return `<div class="pregunta"><h4>¿Cómo te fue?</h4>
     <div class="ops" role="radiogroup" aria-label="Cómo te fue">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
-    ${sel && sel.resp ? `<div class="respuesta nivel-${sel.nivel}"><p>${esc(sel.resp)}</p>${sel.url ? `<a href="${esc(sel.url)}" target="_blank" rel="noopener">Ver el ejemplo del video</a>` : ''}</div>` : ''}
+    ${sel && sel.resp ? `<div class="respuesta nivel-${sel.nivel}"><p>${esc(sel.resp)}</p>${sel.url ? linkHTML('Ver el ejemplo del video', esc(sel.url)) : ''}</div>` : ''}
     ${ayuda.apoyo ? apoyoHTML(p) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
 }
 
-/* Miniatura de un paso: la del video de YouTube si tiene; si no, una placa con el número */
-function miniHTML(p, n) {
-  if (p.video) return `<span class="mini"><img src="${miniatura(p.video.id)}" alt="" loading="lazy" onerror="this.remove()"><span class="mini-n">${n}</span></span>`;
-  return `<span class="mini mini-placa"><span class="mini-n">${n}</span>${p.tipo === 'standard' ? ICONO.disco : ICONO.doc}</span>`;
-}
-function marcaHTML(st, p) {
-  const pr = st.prog[p.id] || {};
-  const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
-  return `<span class="marca-est est-${est}" aria-hidden="true">${pr.hecho ? ICONO.check : ''}</span>`;
-}
-const pasosEnOrden = () => PROGRAMA.pasos;
-function numeroPaso(id) { return pasosEnOrden().findIndex(p => p.id === id) + 1; }
+function siguienteDe(id) { const i = ORDEN.indexOf(id); return PASO[ORDEN[i + 1]] || null; }
 
-/* ---------- Clase (vista de un paso) ---------- */
-function videoHTML(p) {
-  if (!p.video) return '';
-  const src = `https://www.youtube-nocookie.com/embed/${p.video.id}?rel=0${p.video.t ? '&start=' + p.video.t : ''}`;
-  const link = `https://www.youtube.com/watch?v=${p.video.id}${p.video.t ? '&t=' + p.video.t + 's' : ''}`;
-  return `<div class="video"><iframe src="${src}" title="${esc(p.titulo)}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
-    <a class="video-fallback" href="${link}" target="_blank" rel="noopener"><img src="${miniatura(p.video.id)}" alt="" onerror="this.remove()"><span>${ICONO.video}Ver el video en YouTube</span></a></div>`;
-}
-function leccionCabHTML(st, e, p) {
-  const et = PROGRAMA.etapas.find(x => x.id === p.etapa);
+function tarjetaHTML(st, e, p) {
+  const sel = opcionElegida(st, p);
+  const sig = siguienteDe(p.id);
+  const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   const necesario = e.faltan.includes(p.id);
-  return `<p class="lec-etapa">${esc(et.titulo)}</p>
-    <h2 id="lec-titulo">${esc(p.titulo)}</h2>
-    <div class="lec-chips">
-      ${p.entrega ? `<span class="chip">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</span>` : ''}
-      ${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}
-      ${tocado(st, p.id) ? `<span class="chip chip-ok">${ICONO.check}Marcado</span>` : ''}
-    </div>`;
-}
-function leccionCuerpoHTML(st, e, p) {
-  const tDe = url => { const m = String(url).match(/[?&]t=(\d+)/); return m ? +m[1] : 0; };
-  const otros = (p.recursos || []).filter(r => !(p.video && ytId(r.url) === p.video.id && tDe(r.url) === (p.video.t || 0)));
-  return `
-    <div class="bloque"><h3>Qué hacer</h3>${textoHTML(p.detalle)}</div>
-    ${otros.length || p.hotmart ? `<div class="bloque"><h3>Material</h3><div class="material">${otros.map(recursoHTML).join('')}
-      ${p.hotmart ? `<a class="recurso" href="${PROGRAMA.hotmartBase + p.hotmart}" target="_blank" rel="noopener"><span class="ico h">${ICONO.video}</span><span>Ver la clase en Hotmart<small>Con el material descargable</small></span></a>` : ''}</div></div>` : ''}
-    ${comoTeFueHTML(st, p)}`;
-}
-function listaLateralHTML(st, idActual) {
-  return PROGRAMA.etapas.map(et => {
-    const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
-    return `<p class="lat-etapa">${esc(et.titulo)}</p>${pasos.map(p => `
-      <button class="lat-item ${p.id === idActual ? 'actual' : ''}" data-abrir="${p.id}" ${p.id === idActual ? 'aria-current="true"' : ''}>
-        ${miniHTML(p, numeroPaso(p.id))}<span class="lat-t">${p.id === idActual ? '<small>Viendo ahora</small>' : ''}${esc(p.titulo)}</span>${marcaHTML(st, p)}
-      </button>`).join('')}`;
-  }).join('');
-}
-function leccionHTML(st, e, id) {
-  const p = PASO[id]; if (!p) return '';
-  const i = pasosEnOrden().findIndex(x => x.id === id);
-  const ant = pasosEnOrden()[i - 1], sig = pasosEnOrden()[i + 1];
-  return `<section class="leccion" role="dialog" aria-modal="true" aria-labelledby="lec-titulo" data-paso="${p.id}">
-    <header class="lec-barra">
-      <button class="volver" data-cerrar="1">${ICONO.atras}Volver</button>
-      <div class="lec-nav">
-        <button class="nav-btn" ${ant ? `data-abrir="${ant.id}"` : 'disabled'} aria-label="Paso anterior">${ICONO.prev}</button>
-        <button class="nav-btn" ${sig ? `data-abrir="${sig.id}"` : 'disabled'} aria-label="Paso siguiente">${ICONO.next}</button>
-      </div>
-    </header>
-    <div class="lec-grid">
-      <div class="lec-main" id="lec-main">
-        ${videoHTML(p)}
-        <div class="lec-cab">${leccionCabHTML(st, e, p)}</div>
-        <div class="lec-cuerpo">${leccionCuerpoHTML(st, e, p)}</div>
-      </div>
-      <aside class="lec-lado" aria-label="Pasos del módulo">${listaLateralHTML(st, p.id)}</aside>
-    </div>
-  </section>`;
+  return `<div class="tarjeta">
+    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
+    <div class="consigna">${textoHTML(p.detalle)}</div>
+    ${materialHTML(p)}
+    ${preguntaHTML(st, p)}
+    ${respondido && sig ? `<div class="seguir">
+        ${sel && sel.nivel === 'cuesta'
+          ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
+          : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span><small>${esc(sig.titulo)}</small>${ICONO.abajo}</button>`}
+      </div>` : ''}
+  </div>`;
 }
 
-/* ---------- Inicio ---------- */
-function tarjetaAhora(st, e, r) {
-  const p = PASO[r.id];
-  const et = PROGRAMA.etapas.find(x => x.id === p.etapa);
-  const etiqueta = { seguir: 'Seguí con esto', falta: e.tipo === 'meterle' ? 'Prioridad' : 'Lo que sigue', extra: 'Si tenés ganas' }[r.motivo];
-  return `<article class="ahora-card">
-    ${p.video ? `<button class="ahora-mini" data-abrir="${p.id}" aria-label="Abrir ${esc(p.titulo)}"><img src="${miniatura(p.video.id)}" alt="" onerror="this.remove()"><span>${ICONO.video}</span></button>` : ''}
-    <div class="ahora-info">
-      <p class="ahora-etq"><span class="${r.motivo === 'falta' && e.tipo === 'meterle' ? 'urg' : ''}">${etiqueta}</span>${esc(et.titulo)}</p>
-      <h3>${esc(p.titulo)}</h3>
-      <p class="ahora-txt">${esc(primerParrafo(p.detalle))}</p>
-      ${p.entrega ? `<p class="ahora-entrega">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</p>` : ''}
-      <button class="primario" data-abrir="${p.id}">Empezar</button>
-    </div>
-  </article>`;
-}
-
-function moduloHTML(st, e, recId) {
-  const total = PROGRAMA.pasos.length;
-  const hechos = PROGRAMA.pasos.filter(p => hecho(st, p.id)).length;
-  const pct = Math.round(100 * hechos / total);
-  return `<section class="modulo-lista">
-    <header class="mod-cab">
-      <span class="mod-num">1</span>
-      <div><h2>${esc(PROGRAMA.modulo)}</h2><p><span class="pct">${pct}%</span><span class="mod-barra"><span style="width:${pct}%"></span></span></p></div>
-    </header>
+const OLAS = [0, 34, 68, 34];
+function caminoHTML(st, e) {
+  let i = 0;
+  return `<div class="camino" id="camino"><svg class="trazo" aria-hidden="true"><path class="trazo-base"/><path class="trazo-hecho"/></svg>
     ${PROGRAMA.etapas.map(et => {
       const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
-      const h = pasos.filter(p => hecho(st, p.id)).length;
       const cerrada = et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id));
-      const plegada = !cerrada && h === pasos.length && !desplegadas.has(et.id) && !pasos.some(p => p.id === recId);
-      return `<div class="grupo ${cerrada ? 'cerrada' : ''}">
-        <div class="grupo-cab"><h3>${esc(et.titulo)}</h3><span>${cerrada ? 'Se abre en la clase 4' : h === pasos.length ? 'Completo' : `${h} de ${pasos.length}`}</span></div>
-        ${plegada ? `<button class="link suave ver-pasos" data-desplegar="${et.id}">Ver los ${pasos.length} pasos</button>` : ''}
-        ${cerrada || plegada ? '' : `<div class="filas">${pasos.map(p => {
-          const pr = st.prog[p.id] || {};
-          const sel = opcionElegida(st, p);
-          const sub = p.tipo === 'standard' && st.standard ? st.standard
-            : pr.hecho && sel && pr.como !== 'listo' ? sel.label
-            : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
-          return `<button class="fila ${p.id === recId ? 'actual' : ''}" data-abrir="${p.id}">
-            ${miniHTML(p, numeroPaso(p.id))}
-            <span class="fila-t"><span class="fila-titulo">${esc(p.titulo)}</span>${sub ? `<span class="fila-sub ${!pr.hecho && e.tipo === 'meterle' ? 'oxido' : ''} ${pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</span>` : ''}</span>
-            ${p.id === recId ? '<span class="aca">Acá estás</span>' : ''}
-            ${marcaHTML(st, p)}
-          </button>`;
-        }).join('')}</div>`}
-      </div>`;
+      return `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>${cerrada ? 'Se abre cuando llegues a la clase 4' : esc(et.sub)}</p></div>
+      ${cerrada ? '' : pasos.map(p => {
+        const n = ++i;
+        const pr = st.prog[p.id] || {};
+        const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
+        const abiertoEste = p.id === abierto;
+        const sel = opcionElegida(st, p);
+        const sub = p.tipo === 'standard' && st.standard ? st.standard
+          : pr.hecho && sel && pr.como !== 'listo' ? sel.label
+          : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
+        return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[n % OLAS.length]}px">
+          <div class="nodo-fila">
+            <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
+            <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
+          </div>
+          ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
+        </section>`;
+      }).join('')}`;
     }).join('')}
-  </section>`;
+    <div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>
+  </div>`;
 }
 
-function vistaHTML(st, e, lista, animar) {
-  const rec = lista[0]; const alt = lista.slice(1);
+function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
-  return `<main class="alumno">
-    <header class="hero">
+  return `<header class="hero">
       <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}</p>
       <h1>Hola, ${esc(st.nombre.split(' ')[0])}</h1>
       <div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}
+      ${e.k <= 4 ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
-
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
     ${extrasPend.length ? `<section class="de-andy"><h2>Andy te dejó</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
-
-    ${rec ? `<section class="ahora"><h2>Ahora</h2>${tarjetaAhora(st, e, rec)}
-      ${alt.length ? `<div class="despues"><h3>${rec.motivo === 'extra' ? 'También podés' : 'Después'}</h3>
-        ${alt.map(r => `<button class="fila fila-chica" data-abrir="${r.id}">${miniHTML(PASO[r.id], numeroPaso(r.id))}<span class="fila-t"><span class="fila-titulo">${esc(PASO[r.id].titulo)}</span>${r.motivo === 'extra' && rec.motivo !== 'extra' ? '<span class="fila-sub">si tenés ganas</span>' : ''}</span>${ICONO.flecha}</button>`).join('')}</div>` : ''}
-    </section>` : ''}
-
-    ${e.k <= 4 ? `<div class="clase-hecha" id="claseHecha">
-      <button class="secundario" data-accion="clase">Ya tuve la clase ${e.k}</button>
-      ${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}
-    </div>` : ''}
-
-    <h2 class="titulo-contenidos">Todos los pasos</h2>
-    ${moduloHTML(st, e, rec && rec.id)}
-    <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>
-  </main>`;
+    ${caminoHTML(st, e)}
+    <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>`;
 }
 
-/* Render: la primera vez arma todo; después actualiza solo lo que cambia, sin recargar la clase abierta */
+/* ---------- El camino dibujado ---------- */
+function dibujarCamino() {
+  const cam = $('#camino'); if (!cam) return;
+  const svg = cam.querySelector('.trazo');
+  const base = cam.getBoundingClientRect();
+  const centro = el => { const r = el.getBoundingClientRect(); return [r.left - base.left + r.width / 2, r.top - base.top + r.height / 2]; };
+  const puntos = [...cam.querySelectorAll('.punto')].map(centro);
+  const meta = cam.querySelector('.meta span'); if (meta) puntos.push(centro(meta));
+  svg.setAttribute('width', cam.clientWidth); svg.setAttribute('height', cam.scrollHeight);
+  const camino = pts => pts.map((p, i) => { if (!i) return `M ${p[0]} ${p[1]}`; const a = pts[i - 1], dy = (p[1] - a[1]) / 2; return `C ${a[0]} ${a[1] + dy}, ${p[0]} ${p[1] - dy}, ${p[0]} ${p[1]}`; }).join(' ');
+  svg.querySelector('.trazo-base').setAttribute('d', camino(puntos));
+  const idx = [...cam.querySelectorAll('.nodo')].findIndex(n => n.classList.contains('abierto'));
+  svg.querySelector('.trazo-hecho').setAttribute('d', idx > 0 ? camino(puntos.slice(0, idx + 1)) : '');
+}
+window.addEventListener('resize', () => requestAnimationFrame(dibujarCamino));
+
+/* ---------- El reproductor (uno solo, al costado) ---------- */
+let player = null, playerVid = null, ytCargando = false, simple = false;
+function panelVideoHTML() {
+  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo" id="pv-titulo"></p></aside>`;
+}
+function asegurarYT(cb) {
+  if (simple || (window.YT && window.YT.Player)) return cb();
+  const prev = window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady = () => { prev && prev(); cb(); };
+  if (!ytCargando) {
+    ytCargando = true;
+    const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
+    s.onerror = () => { simple = true; cb(); };
+    document.head.appendChild(s);
+    setTimeout(() => { if (!(window.YT && window.YT.Player) && !simple) { simple = true; cb(); } }, 4000);
+  }
+}
+function sinSubtitulos(pl) { try { pl.unloadModule('captions'); } catch (e) {} try { pl.unloadModule('cc'); } catch (e) {} }
+function ponerVideo(id, t = 0, play = false) {
+  const tit = $('#pv-titulo'); if (tit) tit.textContent = VIDEOS[id] || '';
+  if (simple || !(window.YT && window.YT.Player)) {
+    const marco = $('#yt'); if (!marco) return;
+    marco.outerHTML = `<iframe id="yt" src="https://www.youtube-nocookie.com/embed/${id}?rel=0&cc_load_policy=0&playsinline=1${t ? '&start=' + t : ''}${play ? '&autoplay=1' : ''}" title="${esc(VIDEOS[id] || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    playerVid = id; return;
+  }
+  if (!player) {
+    player = new YT.Player('yt', { videoId: id, playerVars: { start: t, rel: 0, cc_load_policy: 0, playsinline: 1, modestbranding: 1 },
+      events: { onReady: ev => { sinSubtitulos(ev.target); if (play) ev.target.playVideo(); },
+                onApiChange: ev => sinSubtitulos(ev.target),
+                onStateChange: ev => { if (ev.data === 1) sinSubtitulos(ev.target); } } });
+  } else if (playerVid !== id) {
+    play ? player.loadVideoById({ videoId: id, startSeconds: t }) : player.cueVideoById({ videoId: id, startSeconds: t });
+  } else { player.seekTo(t, true); if (play) player.playVideo(); }
+  playerVid = id;
+}
+function videoParaAbierto(cambioDePaso) {
+  const v = PASO[abierto] && PASO[abierto].video;
+  if (!v) return;
+  if (v.id !== playerVid || (cambioDePaso && v.t)) asegurarYT(() => ponerVideo(v.id, v.t || 0, false));
+}
+
+/* ---------- Render ---------- */
 function renderAlumno(animar) {
   const st = ST; const { e, lista } = recomendaciones(st, 3);
+  if (!abierto || !PASO[abierto]) abierto = (lista[0] && lista[0].id) || ORDEN[0];
   if (!$('#vista') || animar) {
-    app().innerHTML = `${barra(st.nombre)}<div id="vista"></div><div id="hoja-slot"></div>`;
+    player = null; playerVid = null;
+    app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
   }
-  $('#vista').innerHTML = vistaHTML(st, e, lista, animar);
-  const slot = $('#hoja-slot');
-  const lec = slot.querySelector('.leccion');
-  if (!abierto) slot.innerHTML = '';
-  else if (lec && lec.dataset.paso === abierto) {
-    const main = lec.querySelector('.lec-main'); const y = main.scrollTop;
-    lec.querySelector('.lec-cab').innerHTML = leccionCabHTML(st, e, PASO[abierto]);
-    lec.querySelector('.lec-cuerpo').innerHTML = leccionCuerpoHTML(st, e, PASO[abierto]);
-    lec.querySelector('.lec-lado').innerHTML = listaLateralHTML(st, abierto);
-    main.scrollTop = y;
-  } else {
-    slot.innerHTML = leccionHTML(st, e, abierto);
-    const act = slot.querySelector('.lat-item.actual'); act && act.scrollIntoView({ block: 'center' });
+  $('#vista').innerHTML = vistaHTML(st, e, animar);
+  requestAnimationFrame(dibujarCamino);
+  if (!playerVid) {
+    const v = (PASO[abierto] && PASO[abierto].video) || [...ORDEN].reverse().map(id => PASO[id].video).find(Boolean) || { id: 'TylWJrfPxu0' };
+    asegurarYT(() => ponerVideo(v.id, v.t || 0, false));
   }
-  document.body.classList.toggle('con-hoja', !!abierto);
   enlazarAlumno();
   enlazarFormStandard();
+  if (animar) setTimeout(() => irA(abierto, false), 80);
 }
 
-function abrirHoja(id) { abierto = id; renderAlumno(); enfocar('.leccion .volver'); }
-function cerrarHoja() {
-  const id = abierto; abierto = null; renderAlumno();
-  const el = document.querySelector(`.fila[data-abrir="${id}"]`); el && el.scrollIntoView({ block: 'center' });
-  enfocar(`.fila[data-abrir="${id}"]`);
+function irA(id, suave = true) {
+  const el = document.getElementById('n-' + id); if (!el) return;
+  const pv = $('#panel-video');
+  const tapa = window.innerWidth < 1000 && pv ? pv.offsetHeight : 0;
+  const y = el.getBoundingClientRect().top + window.scrollY - 76 - tapa;
+  window.scrollTo({ top: Math.max(0, y), behavior: suave && !reduceMotion ? 'smooth' : 'auto' });
+}
+function abrirPaso(id) {
+  const cambio = id !== abierto;
+  abierto = id; renderAlumno();
+  videoParaAbierto(cambio);
+  requestAnimationFrame(() => irA(id));
 }
 
 function enlazarAlumno() {
@@ -1189,9 +1107,8 @@ function enlazarAlumno() {
   root.onclick = ev => {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
-    if (d.cerrar) cerrarHoja();
-    else if (d.desplegar) { desplegadas.add(d.desplegar); renderAlumno(); }
-    else if (d.abrir) abrirHoja(d.abrir);
+    if (d.abrir) abrirPaso(d.abrir);
+    else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.op) {
       const [id, opId] = d.op.split(':'); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       if (opcionElegida(ST, PASO[id]) === o) delete ST.prog[id];
@@ -1206,15 +1123,13 @@ function enlazarAlumno() {
       const k = (ST.clase || 0) + 1;
       $('#claseHecha').innerHTML = `<p>¿Marcás que ya tuviste la clase ${k}?</p><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button> <button class="link" data-accion="clase-no">Todavía no</button>`;
     } else if (d.accion === 'clase-ok') {
-      ST.clase = (ST.clase || 0) + 1; ST.claseFecha = hoyISO(); guardarAlumno(); renderAlumno(true);
-      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      ST.clase = (ST.clase || 0) + 1; ST.claseFecha = hoyISO(); guardarAlumno(); abierto = null; renderAlumno(true);
     } else if (d.accion === 'clase-no') renderAlumno();
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'salir') salir();
-    else if (d.accion === 'volver-admin') { abierto = null; document.body.classList.remove('con-hoja'); abrirAdmin(); }
+    else if (d.accion === 'volver-admin') { abierto = null; abrirAdmin(); }
   };
 }
-document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && abierto && ST) cerrarHoja(); });
 
 function enlazarFormStandard() {
   const f = document.querySelector('[data-form-standard]'); if (!f) return;
