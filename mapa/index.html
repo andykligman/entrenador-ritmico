@@ -55,10 +55,14 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,46%);gap:0;max-width:1440px;margin:0 auto}
 .alumno{padding:0 40px 120px;min-width:0}
 .alumno h2{font-size:20px;margin:0 0 14px}
-.panel-video{position:sticky;top:0;align-self:start;height:100vh;padding:24px 28px 24px 0;display:flex;flex-direction:column;gap:10px}
+.panel-video{position:sticky;top:0;align-self:start;height:100vh;padding:24px 32px 24px 8px;display:flex;flex-direction:column;justify-content:center;gap:10px}
 .pv-marco{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--linea)}
 .pv-marco iframe,.pv-marco #yt{position:absolute;inset:0;width:100%;height:100%;border:0}
-.pv-titulo{margin:0;font-family:var(--display);font-weight:500;font-size:15px;color:var(--gris)}
+.pv-titulo{margin:0;font-family:var(--display);font-weight:500;font-size:15px;color:var(--gris);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pv-aviso{font-family:var(--sans);font-size:13px;font-weight:600;color:#1B1208;background:var(--naranja);padding:2px 10px;border-radius:999px;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
+.pv-aviso.ver{opacity:1;transform:none}
+.panel-video.cambio .pv-marco{animation:cambioVideo .7s ease}
+@keyframes cambioVideo{0%{box-shadow:0 0 0 0 rgba(232,131,79,.9)}40%{box-shadow:0 0 0 6px rgba(232,131,79,.55)}100%{box-shadow:0 0 0 0 rgba(232,131,79,0)}}
 
 /* Encabezado */
 .hero{padding:28px 0 6px}
@@ -205,6 +209,15 @@ a.mat svg{color:var(--azul-txt)}
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
+.acceso{margin:18px 0;padding:14px;border:1px solid var(--linea);border-radius:var(--radio-s);background:var(--sup2)}
+.acceso-cab{display:grid;gap:2px;margin-bottom:10px}
+.acceso-cab h3{font-size:16px}
+.acceso-cab .suave{font-size:15px}
+.bloque-email{display:grid;gap:4px;font-weight:600;font-size:15px;margin-bottom:10px}
+.bloque-email input{padding:8px 10px;border:1.5px solid var(--linea);border-radius:var(--radio-s);background:var(--sup);font-weight:400}
+.link-inv textarea{width:100%;border:1px solid var(--linea);border-radius:var(--radio-s);padding:10px;font-size:15px;background:var(--sup);resize:vertical}
+.link-inv p{margin:0 0 6px}
+.fila-botones{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 /* Aviso de guardado */
 #aviso{position:fixed;right:16px;bottom:16px;background:var(--tinta);color:var(--blanco);padding:8px 14px;border-radius:999px;font-size:14px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:9}
 #aviso.visible{opacity:1;transform:none}
@@ -702,7 +715,7 @@ const API_URL = '';
 const hoyISO = (delta = 0) => { const d = new Date(); d.setDate(d.getDate() + delta); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
 function alumnoVacio(nombre, nivel, inicio) {
-  return { codigo: '', nombre, standard: '', nivel: nivel || 2, inicio: inicio || hoyISO(), clase: 0, claseFecha: '', pausa: false,
+  return { codigo: '', nombre, email: '', standard: '', nivel: nivel || 2, inicio: inicio || hoyISO(), clase: 0, claseFecha: '', pausa: false,
            nota: '', extras: [], prog: {}, probs: {}, act: '' };
 }
 
@@ -714,7 +727,7 @@ function codigoNuevo(nombre) {
 }
 
 /* ---------- Modo demo (localStorage, con respaldo en memoria) ---------- */
-const DEMO_KEY = 'mapaAE_demo_v3';
+const DEMO_KEY = 'mapaAE_demo_v4';
 let memoria = null;
 function leerDemo() {
   if (memoria) return memoria;
@@ -726,20 +739,20 @@ function escribirDemo() { try { localStorage.setItem(DEMO_KEY, JSON.stringify(me
 function semillaDemo() {
   const marca = (ids, como = 'listo') => Object.fromEntries(ids.map(id => [id, { hecho: true, como, t: hoyISO(-1) }]));
   const lucas = Object.assign(alumnoVacio('Lucas (prueba)', 2, hoyISO(-19)), {
-    codigo: 'lucas-demo', clase: 1, claseFecha: hoyISO(-2), act: hoyISO(-1),
+    codigo: 'lucas-demo', email: 'lucas@prueba.com', clave: 'prueba123', clase: 1, claseFecha: hoyISO(-2), act: hoyISO(-1),
     prog: { ...marca(['p2', 'p3', 'p4', 'p5', 'p5b', 'p6', 'p7']), e1: { hecho: true, como: 'casi', op: 'errores', t: hoyISO(-2) }, e2: { hecho: true, como: 'cuesta', op: 'fijo', t: hoyISO(-1) } }, standard: 'Joy Spring',
     nota: 'Lucas, ojo con el compás 3 de Joy Spring: decí el acorde en voz alta antes de que llegue.',
   });
   const sofi = Object.assign(alumnoVacio('Sofía (prueba)', 3, hoyISO(-6)), {
-    codigo: 'sofia-demo', act: hoyISO(0), prog: marca(['p2', 'p3', 'p4']),
+    codigo: 'sofia-demo', email: 'sofia@prueba.com', clave: 'prueba123', act: hoyISO(0), prog: marca(['p2', 'p3', 'p4']),
   });
   const tomas = Object.assign(alumnoVacio('Tomás (prueba)', 1, hoyISO(-30)), {
-    codigo: 'tomas-demo', standard: 'Autumn Leaves', clase: 2, claseFecha: hoyISO(-6), act: hoyISO(-5),
+    codigo: 'tomas-demo', email: 'tomas@prueba.com', clave: 'prueba123', standard: 'Autumn Leaves', clase: 2, claseFecha: hoyISO(-6), act: hoyISO(-5),
     prog: marca(['p2', 'p3', 'p4', 'p5', 'p5b', 'p6', 'p7', 'e1']),
     extras: [{ id: 'x1', titulo: 'Repasar las posiciones del Re7 en las cuerdas 2-3-4', detalle: 'Antes de la clase, aunque sea 10 minutos por día.', hecho: false }],
   });
   const caro = Object.assign(alumnoVacio('Carolina (prueba)', 2, hoyISO(-40)), {
-    codigo: 'caro-demo', standard: 'That Old Feeling', clase: 3, claseFecha: hoyISO(-2), act: hoyISO(0),
+    codigo: 'caro-demo', email: 'caro@prueba.com', invitacion: 'demo-invitacion-caro', standard: 'That Old Feeling', clase: 3, claseFecha: hoyISO(-2), act: hoyISO(0),
     prog: { ...marca(['p2', 'p3', 'p4', 'p5', 'p5b', 'p6', 'p7', 'e1', 'e2', 'e3', 'e4', 'a1', 'a2', 'a3', 's1']), s2: { hecho: true, como: 'casi', t: hoyISO(0) }, s3: { hecho: true, como: 'casi', t: hoyISO(0) }, m1: { hecho: true, como: 'listo', t: hoyISO(0) } },
   });
   return { alumnos: [lucas, sofi, tomas, caro] };
@@ -748,30 +761,53 @@ function semillaDemo() {
 /* ---------- API ---------- */
 async function llamar(accion, datos) {
   if (!API_URL) return demo(accion, datos);
-  const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                                   body: JSON.stringify({ accion, ...datos }) });
+  let r;
+  try {
+    r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ accion, ...datos }) });
+  } catch (e) { throw new Error('No hay conexión. Revisá internet y volvé a intentar.'); }
   const j = await r.json();
   if (j.error) throw new Error(j.error);
   return j;
 }
 
+/* Modo demo: imita al servidor, con contraseñas en este navegador (solo para probar) */
+const tokenDemo = () => Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
 function demo(accion, d) {
   const db = leerDemo();
-  const buscar = c => db.alumnos.find(a => a.codigo === (c || '').trim().toLowerCase());
+  db.sesiones = db.sesiones || {};
+  const por = (campo, v) => db.alumnos.find(a => v && String(a[campo] || '') === String(v).trim().toLowerCase());
+  const publico = (a, panel) => { const c = JSON.parse(JSON.stringify(a)); delete c.clave; delete c.invitacion; if (panel) { c.tieneClave = !!a.clave; c.invitacionPendiente = !!a.invitacion; } return c; };
+  const deSesion = t => { const a = por('codigo', db.sesiones[t]); if (!a) throw new Error('Tu sesión se cerró. Volvé a entrar con tu email y contraseña.'); return a; };
+  const sesion = a => { const t = tokenDemo(); db.sesiones[t] = a.codigo; escribirDemo(); return t; };
   switch (accion) {
-    case 'alumno.get': { const a = buscar(d.codigo); if (!a) throw new Error('No encontramos ese código. Revisá que esté bien escrito o pedíselo a Andy.'); return { alumno: JSON.parse(JSON.stringify(a)) }; }
+    case 'auth.invitacion': { const a = db.alumnos.find(x => x.invitacion && x.invitacion === d.invitacion); if (!a) throw new Error('Este link ya se usó o no es válido. Pedile uno nuevo a Andy.'); return { nombre: a.nombre, email: a.email }; }
+    case 'auth.crearClave': {
+      const a = db.alumnos.find(x => x.invitacion && x.invitacion === d.invitacion); if (!a) throw new Error('Este link ya se usó o no es válido. Pedile uno nuevo a Andy.');
+      if (!d.clave || d.clave.length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.');
+      a.clave = d.clave; a.invitacion = ''; return { token: sesion(a), alumno: publico(a) };
+    }
+    case 'auth.entrar': { const a = por('email', String(d.email || '').toLowerCase()); if (!a || !a.clave || a.clave !== d.clave) throw new Error('El email o la contraseña no coinciden.'); return { token: sesion(a), alumno: publico(a) }; }
+    case 'auth.salir': delete db.sesiones[d.token]; escribirDemo(); return { ok: true };
+    case 'alumno.get': return { alumno: publico(deSesion(d.token)) };
     case 'alumno.guardar': {
-      const a = buscar(d.codigo); if (!a) throw new Error('Código inválido');
+      const a = deSesion(d.token);
       ['prog', 'probs', 'clase', 'claseFecha', 'standard'].forEach(k => { if (k in d.cambios) a[k] = d.cambios[k]; });
       if (d.cambios.extras) a.extras = a.extras.map(x => ({ ...x, hecho: !!(d.cambios.extras.find(y => y.id === x.id) || {}).hecho }));
       a.act = hoyISO(); escribirDemo(); return { ok: true };
     }
-    case 'admin.lista': return { alumnos: JSON.parse(JSON.stringify(db.alumnos)) };
+    case 'admin.lista': return { alumnos: db.alumnos.map(a => publico(a, true)) };
+    case 'admin.crear': {
+      const al = d.alumno; al.email = String(al.email || '').trim().toLowerCase();
+      if (al.email && por('email', al.email)) throw new Error('Ya hay un alumno con ese email');
+      al.invitacion = tokenDemo(); db.alumnos.push(al); escribirDemo(); return { alumno: publico(al, true), invitacion: al.invitacion };
+    }
     case 'admin.guardar': {
-      const i = db.alumnos.findIndex(a => a.codigo === d.alumno.codigo);
-      if (i >= 0) db.alumnos[i] = d.alumno; else db.alumnos.push(d.alumno);
+      const i = db.alumnos.findIndex(a => a.codigo === d.alumno.codigo); if (i < 0) throw new Error('No existe ese alumno');
+      const priv = { clave: db.alumnos[i].clave, invitacion: db.alumnos[i].invitacion };
+      db.alumnos[i] = Object.assign({}, d.alumno, priv); delete db.alumnos[i].tieneClave; delete db.alumnos[i].invitacionPendiente;
       escribirDemo(); return { ok: true };
     }
+    case 'admin.invitar': { const a = por('codigo', d.codigo); a.invitacion = tokenDemo(); escribirDemo(); return { invitacion: a.invitacion }; }
     case 'admin.borrar': { db.alumnos = db.alumnos.filter(a => a.codigo !== d.codigo); escribirDemo(); return { ok: true }; }
     case 'demo.reset': { memoria = semillaDemo(); escribirDemo(); return { ok: true }; }
   }
@@ -799,9 +835,13 @@ const ETIQUETA_COMO = { cuesta: 'Me cuesta', casi: 'Casi', listo: 'Ya está' };
 const NOMBRE_ESTACION = ['Inicio', 'Clase 1', 'Clase 2', 'Clase 3', 'Clase 4', 'Módulo 2'];
 
 function nav(url) { try { history.replaceState(null, '', url); } catch (e) {} }
-function linkAlumno(codigo) {
-  const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('a', codigo); return u.toString();
+function linkInvitacion(token) {
+  const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('invitacion', token); return u.toString();
 }
+function linkMapa() { const u = new URL(location.href); u.search = ''; u.hash = ''; return u.toString(); }
+let TOKEN = '';
+try { TOKEN = localStorage.getItem('mapaAE_token') || ''; } catch (e) {}
+function guardarToken(t) { TOKEN = t || ''; try { t ? localStorage.setItem('mapaAE_token', t) : localStorage.removeItem('mapaAE_token'); } catch (e) {} }
 
 /* ---------------- Guardado ---------------- */
 let timerGuardar = null;
@@ -811,9 +851,9 @@ function guardarAlumno() {
   timerGuardar = setTimeout(async () => {
     try {
       if (modo === 'admin-vista') await llamar('admin.guardar', { clave: claveAdmin, alumno: ST });
-      else await llamar('alumno.guardar', { codigo: ST.codigo, cambios: { prog: ST.prog, probs: ST.probs, clase: ST.clase, claseFecha: ST.claseFecha, extras: ST.extras, standard: ST.standard } });
+      else await llamar('alumno.guardar', { token: TOKEN, cambios: { prog: ST.prog, probs: ST.probs, clase: ST.clase, claseFecha: ST.claseFecha, extras: ST.extras, standard: ST.standard } });
       aviso('Guardado');
-    } catch (e) { aviso('No se pudo guardar. Revisá la conexión y volvé a intentar.', true); }
+    } catch (e) { aviso(/sesión/.test(e.message) ? e.message : 'No se pudo guardar. Revisá la conexión y volvé a intentar.', true); }
   }, 500);
 }
 function aviso(t, error) {
@@ -1031,7 +1071,15 @@ window.addEventListener('resize', () => requestAnimationFrame(dibujarCamino));
 /* ---------- El reproductor (uno solo, al costado) ---------- */
 let player = null, playerVid = null, ytCargando = false, simple = false;
 function panelVideoHTML() {
-  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo" id="pv-titulo"></p></aside>`;
+  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span></p></aside>`;
+}
+/* Que se note cuando cambia el video o salta a otro minuto */
+let timerAviso = null;
+function marcarCambio(texto) {
+  const panel = $('#panel-video'), av = $('#pv-aviso'); if (!panel || !av) return;
+  panel.classList.remove('cambio'); void panel.offsetWidth; panel.classList.add('cambio');
+  av.textContent = texto; av.classList.add('ver');
+  clearTimeout(timerAviso); timerAviso = setTimeout(() => av.classList.remove('ver'), 3500);
 }
 function asegurarYT(cb) {
   if (simple || (window.YT && window.YT.Player)) return cb();
@@ -1048,6 +1096,8 @@ function asegurarYT(cb) {
 function sinSubtitulos(pl) { try { pl.unloadModule('captions'); } catch (e) {} try { pl.unloadModule('cc'); } catch (e) {} }
 function ponerVideo(id, t = 0, play = false) {
   const tit = $('#pv-titulo'); if (tit) tit.textContent = VIDEOS[id] || '';
+  if (playerVid && playerVid !== id) marcarCambio(t ? `Video nuevo, desde ${mmss(t)}` : 'Video nuevo');
+  else if (playerVid && t) marcarCambio(`Desde ${mmss(t)}`);
   if (simple || !(window.YT && window.YT.Player)) {
     const marco = $('#yt'); if (!marco) return;
     marco.outerHTML = `<iframe id="yt" src="https://www.youtube-nocookie.com/embed/${id}?rel=0&cc_load_policy=0&playsinline=1${t ? '&start=' + t : ''}${play ? '&autoplay=1' : ''}" title="${esc(VIDEOS[id] || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
@@ -1154,39 +1204,86 @@ function renderEntrada(error) {
   app().innerHTML = `${barra('')}
   <main class="entrada">
     <h1>Tu mapa de Ajuste Elástico</h1>
-    <p>Entrá con el código que te pasó Andy. Si abriste tu link personal, entra solo.</p>
-    <form id="formEntrada">
-      <label for="codigo">Tu código</label>
-      <input id="codigo" name="codigo" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="por ejemplo: lucas-k7m2" required>
+    <p class="suave">Entrá con el email y la contraseña que creaste con el link que te mandó Andy.</p>
+    <form id="formEntrada" novalidate>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" required>
+      <label for="clave">Contraseña</label>
+      <input id="clave" name="clave" type="password" autocomplete="current-password" required>
       ${error ? `<p class="error" role="alert">${esc(error)}</p>` : ''}
       <button class="primario" type="submit">Entrar</button>
     </form>
+    <p class="suave chico">¿Te olvidaste la contraseña? Escribile a Andy por WhatsApp y te manda un link nuevo.</p>
     ${!API_URL ? `<div class="demo">
       <p><strong>Modo de prueba.</strong> Todavía no está conectado a la planilla: lo que marques queda solo en este navegador.</p>
-      <p>Alumnos de ejemplo:</p>
-      <ul>${leerDemo().alumnos.map(a => `<li><button class="link" data-demo="${a.codigo}">${esc(a.nombre)}</button></li>`).join('')}</ul>
+      <p>Alumnos de ejemplo (contraseña <code>prueba123</code>):</p>
+      <ul>${leerDemo().alumnos.filter(a => a.clave).map(a => `<li><button class="link" data-demo-email="${esc(a.email)}">${esc(a.nombre)}</button> <span class="suave chico">${esc(a.email)}</span></li>`).join('')}</ul>
+      <p><button class="link" data-demo-inv="demo-invitacion-caro">Probar el link de invitación (Carolina)</button></p>
       <p><button class="link" data-demo-admin="1">Entrar al panel de Andy</button> · <button class="link suave" data-demo-reset="1">Reiniciar ejemplos</button></p>
     </div>` : `<p class="suave chico"><button class="link suave" data-demo-admin="1">Soy Andy</button></p>`}
   </main>`;
-  $('#formEntrada').onsubmit = ev => { ev.preventDefault(); entrar($('#codigo').value); };
+  const f = $('#formEntrada');
+  f.onsubmit = async ev => {
+    ev.preventDefault();
+    const email = f.email.value.trim(), clave = f.clave.value;
+    if (!email || !clave) { renderEntrada('Completá el email y la contraseña.'); return; }
+    const btn = f.querySelector('button'); btn.disabled = true; btn.textContent = 'Entrando…';
+    try { const r = await llamar('auth.entrar', { email, clave }); guardarToken(r.token); abrirMapa(r.alumno); }
+    catch (e) { renderEntrada(e.message); $('#email').value = email; }
+  };
   app().onclick = ev => {
     const b = ev.target.closest('button'); if (!b) return;
-    if (b.dataset.demo) entrar(b.dataset.demo);
+    if (b.dataset.demoEmail) { f.email.value = b.dataset.demoEmail; f.clave.value = 'prueba123'; f.requestSubmit(); }
+    if (b.dataset.demoInv) renderInvitacion(b.dataset.demoInv);
     if (b.dataset.demoAdmin) pedirClave();
-    if (b.dataset.demoReset) { llamar('demo.reset', {}).then(() => renderEntrada()); }
+    if (b.dataset.demoReset) { guardarToken(''); llamar('demo.reset', {}).then(() => renderEntrada()); }
   };
 }
 
-async function entrar(codigo, animar = true) {
-  try {
-    const { alumno } = await llamar('alumno.get', { codigo: codigo.trim().toLowerCase() });
-    ST = alumno; modo = 'alumno'; abierto = null;
-    try { localStorage.setItem('mapaAE_codigo', ST.codigo); } catch (e) {}
-    if (params.get('a') !== ST.codigo) nav('?a=' + encodeURIComponent(ST.codigo));
-    renderAlumno(animar);
-  } catch (e) { renderEntrada(e.message); }
+/* Link de invitación: el alumno elige su contraseña (también sirve para recuperarla) */
+async function renderInvitacion(token, error) {
+  let info;
+  try { info = await llamar('auth.invitacion', { invitacion: token }); }
+  catch (e) { nav(location.pathname); renderEntrada(e.message); return; }
+  app().innerHTML = `${barra('')}
+  <main class="entrada">
+    <h1>Hola, ${esc((info.nombre || '').split(' ')[0])}</h1>
+    <p class="suave">Elegí una contraseña para entrar a tu mapa. Tu usuario es tu email: <strong>${esc(info.email || '')}</strong>.</p>
+    <form id="formClaveNueva" novalidate>
+      <input type="email" name="email" value="${esc(info.email || '')}" autocomplete="username" hidden>
+      <label for="c1">Contraseña <span class="suave">(al menos 6 caracteres)</span></label>
+      <input id="c1" name="c1" type="password" autocomplete="new-password" required minlength="6">
+      <label for="c2">Repetila</label>
+      <input id="c2" name="c2" type="password" autocomplete="new-password" required>
+      ${error ? `<p class="error" role="alert">${esc(error)}</p>` : ''}
+      <button class="primario" type="submit">Guardar y entrar</button>
+    </form>
+  </main>`;
+  app().onclick = null;
+  const f = $('#formClaveNueva');
+  f.onsubmit = async ev => {
+    ev.preventDefault();
+    if (f.c1.value.length < 6) return renderInvitacion(token, 'La contraseña tiene que tener al menos 6 caracteres.');
+    if (f.c1.value !== f.c2.value) return renderInvitacion(token, 'Las dos contraseñas no son iguales.');
+    const btn = f.querySelector('button'); btn.disabled = true; btn.textContent = 'Guardando…';
+    try { const r = await llamar('auth.crearClave', { invitacion: token, clave: f.c1.value }); guardarToken(r.token); abrirMapa(r.alumno); }
+    catch (e) { renderInvitacion(token, e.message); }
+  };
 }
-function salir() { try { localStorage.removeItem('mapaAE_codigo'); } catch (e) {} ST = null; nav(location.pathname); renderEntrada(); }
+
+function abrirMapa(alumno) {
+  ST = alumno; modo = 'alumno'; abierto = null;
+  nav(location.pathname);
+  renderAlumno(true);
+}
+async function entrarConSesion() {
+  try { const { alumno } = await llamar('alumno.get', { token: TOKEN }); abrirMapa(alumno); }
+  catch (e) { guardarToken(''); renderEntrada(/sesión/.test(e.message) ? '' : e.message); }
+}
+function salir() {
+  const t = TOKEN; guardarToken(''); ST = null; nav(location.pathname); renderEntrada();
+  if (t) llamar('auth.salir', { token: t }).catch(() => {});
+}
 
 /* ---------------- Panel de Andy ---------------- */
 let LISTA = [];
@@ -1239,20 +1336,22 @@ function nuevoHTML() {
   return `<h2>Agregar alumno</h2>
   <form id="formNuevo" class="form-admin">
     <label>Nombre<input name="nombre" required placeholder="Nombre y apellido"></label>
+    <label>Email <span class="suave">(con esto entra a su mapa)</span><input name="email" type="email" required placeholder="alumno@email.com"></label>
     <label>Nivel <span class="suave">(el alumno no lo ve)</span>
       <select name="nivel"><option value="1">1: se lo compara con el mínimo</option><option value="2" selected>2: con lo esperado</option><option value="3">3: con lo ideal</option></select></label>
     <label>Fecha de la llamada de bienvenida<input type="date" name="inicio" value="${hoyISO()}"></label>
-    <button class="primario">Crear y generar link</button>
+    <button class="primario">Crear y generar el link de acceso</button>
   </form>`;
 }
 
 function detalleHTML(a) {
   const e = estado(a);
-  const link = linkAlumno(a.codigo);
-  const msg = mensajeWhatsApp(a, link);
+  const msg = mensajeWhatsApp(a, linkMapa());
   const probs = Object.entries(a.probs || {}).flatMap(([pid, l]) => l.map(q => ({ pid, q: (PASO[pid].problemas || []).find(x => x.id === q) })).filter(x => x.q));
   return `<div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
+
+  ${accesoHTML(a)}
 
   <div class="mensaje">
     <div class="mensaje-cab"><h3>Mensaje de lo que sigue</h3>
@@ -1290,10 +1389,23 @@ function detalleHTML(a) {
   </div>
 
   <div class="bloque links-adm">
-    <button class="secundario" data-adm="link">Copiar su link</button>
     <button class="secundario" data-adm="ver">Ver su mapa</button>
     <button class="link suave" data-adm="borrar">Borrar alumno</button>
-    <p class="suave chico">Código: <code>${esc(a.codigo)}</code></p>
+  </div>`;
+}
+
+const linksRecientes = {};
+function accesoHTML(a) {
+  const link = linksRecientes[a.codigo];
+  const estadoAcceso = a.tieneClave ? `Entra con <strong>${esc(a.email || 'sin email')}</strong> y su contraseña.` : `Todavía no creó su contraseña${a.email ? ` (${esc(a.email)})` : ''}.`;
+  const msgInv = link ? `${a.nombre.split(' ')[0]}! Te paso el link para entrar a tu mapa de Ajuste Elástico 🙌\n\nAbrilo, elegí una contraseña y listo. Después entrás siempre con tu email y esa contraseña.\n\n${link}` : '';
+  return `<div class="acceso">
+    <div class="acceso-cab"><h3>Acceso</h3><span class="suave">${estadoAcceso}</span></div>
+    <label class="bloque-email">Email<input type="email" data-campo="email" value="${esc(a.email || '')}"></label>
+    ${link ? `<div class="link-inv"><p class="chico">Link para ${a.tieneClave ? 'cambiar la contraseña' : 'crear la contraseña'} (sirve una sola vez):</p>
+        <textarea id="msgInv" rows="5">${esc(msgInv)}</textarea>
+        <span class="fila-botones"><button class="secundario" data-adm="copiar-inv">Copiar mensaje</button><a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msgInv)}">Abrir en WhatsApp</a></span></div>`
+      : `<button class="secundario" data-adm="invitar">${a.tieneClave ? 'Generar link para nueva contraseña' : 'Generar link de acceso'}</button>`}
   </div>`;
 }
 
@@ -1318,7 +1430,11 @@ function enlazarAdmin() {
     const d = b.dataset;
     if (d.adm === 'nuevo') { elegido = '__nuevo'; renderAdmin(); }
     else if (d.adm === 'copiar') copiar($('#msg').value, b, 'Copiado');
-    else if (d.adm === 'link') copiar(linkAlumno(a.codigo), b, 'Link copiado');
+    else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
+    else if (d.adm === 'invitar') {
+      try { const r = await llamar('admin.invitar', { clave: claveAdmin, codigo: a.codigo }); linksRecientes[a.codigo] = linkInvitacion(r.invitacion); a.invitacionPendiente = true; renderAdmin(); }
+      catch (e) { aviso(e.message, true); }
+    }
     else if (d.adm === 'ver') { ST = JSON.parse(JSON.stringify(a)); modo = 'admin-vista'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); }
     else if (d.adm === 'borrar') {
       if (b.dataset.seguro) { await llamar('admin.borrar', { clave: claveAdmin, codigo: a.codigo }); LISTA = LISTA.filter(x => x !== a); elegido = null; renderAdmin(); }
@@ -1336,13 +1452,19 @@ function enlazarAdmin() {
   root.onchange = ev => {
     const c = ev.target.dataset.campo; if (!c || !a) return;
     a[c] = ev.target.type === 'checkbox' ? ev.target.checked : ev.target.value;
-    guardarAdm(a, c !== 'nota');
+    if (c === 'email') a.email = a.email.trim().toLowerCase();
+    guardarAdm(a, c !== 'nota' && c !== 'email');
   };
   const fn = $('#formNuevo');
-  if (fn) fn.onsubmit = ev => {
+  if (fn) fn.onsubmit = async ev => {
     ev.preventDefault(); const f = new FormData(fn);
     const nuevo = alumnoVacio(f.get('nombre').trim(), +f.get('nivel'), f.get('inicio'));
-    nuevo.codigo = codigoNuevo(nuevo.nombre); LISTA.push(nuevo); elegido = nuevo.codigo; guardarAdm(nuevo);
+    nuevo.email = String(f.get('email') || '').trim().toLowerCase();
+    nuevo.codigo = codigoNuevo(nuevo.nombre);
+    try {
+      const r = await llamar('admin.crear', { clave: claveAdmin, alumno: nuevo });
+      LISTA.push(r.alumno); elegido = nuevo.codigo; linksRecientes[nuevo.codigo] = linkInvitacion(r.invitacion); renderAdmin();
+    } catch (e) { aviso(e.message, true); }
   };
   const fe = $('#formExtra');
   if (fe) fe.onsubmit = ev => {
@@ -1367,9 +1489,8 @@ window.addEventListener('resize', () => {
 
 (function inicio() {
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }
-  let c = params.get('a');
-  if (!c) { try { c = localStorage.getItem('mapaAE_codigo'); } catch (e) {} }
-  c ? entrar(c) : renderEntrada();
+  if (params.get('invitacion')) { renderInvitacion(params.get('invitacion')); return; }
+  TOKEN ? entrarConSesion() : renderEntrada();
 })();
 
 </script>
