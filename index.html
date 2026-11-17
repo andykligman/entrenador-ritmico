@@ -426,12 +426,16 @@ function generar(){
     // Frases de 2 o 4 compases; cada una con densidad y manera de armarse distintas.
     // Reglas: una misma idea no dura más de 3 compases, y una idea no vuelve a aparecer en la línea.
     // Densidad por secciones: casi siempre la línea tiene 3 momentos distintos (denso, medio, con aire).
-    const dens={densa:[0,0,0,1],media:[0,1,1,1,2],aire:[1,1,2,2,3]};
-    const resp={densa:[0,0,1],media:[0,1,1],aire:[1,2,2]};
-    let plan;
-    if(Math.random()<.75){ const orden=pick([['media','densa','aire'],['aire','media','densa'],['densa','aire','media'],['media','aire','densa'],['aire','densa','media'],['densa','media','aire']]);
-      const b1=Math.round(st.bars/3/2)*2*CBv, b2=Math.round(st.bars*2/3/2)*2*CBv; plan=p=> p<b1?orden[0]:(p<b2?orden[1]:orden[2]); }
-    else { const base=pick(['media','densa']); plan=()=>base; }
+    const dens={densa:[0,0,0,0,1],media:[0,1,1,1,2],aire:[2,3,3,4]};
+    const resp={densa:[0,0,1],media:[1,1,2],aire:[3,4,5]};
+    // secciones de 2 o 4 compases con densidad poco / medio / mucho espacio, sin repetir la misma seguida;
+    // en líneas de 8 compases o más aparecen las tres
+    const secs=[]; { let b=0, prev=''; const niveles=['densa','media','aire'];
+      while(b<st.bars){ const l=Math.min(st.bars-b, pick(st.bars>=8?[2,2,4]:[2])); let opc=niveles.filter(n=>n!==prev);
+        const faltan=niveles.filter(n=>!secs.some(x=>x.n===n) && n!==prev); if(faltan.length && Math.random()<.8) opc=faltan;
+        const n=pick(opc); secs.push({ini:b*CBv,fin:(b+l)*CBv,n}); prev=n; b+=l; } }
+    const plan=p=>{ for(const x of secs) if(p<x.fin) return x.n; return secs[secs.length-1].n; };
+    const finSec=p=>{ for(const x of secs) if(p<x.fin) return x.fin; return total; };
     let lastStrat='';
     const usadas=new Set();
     const nueva=(firma)=>{ if(usadas.has(firma)) return false; usadas.add(firma); return true; };
@@ -461,8 +465,12 @@ function generar(){
       const fBeats=Math.min(room()/2, pick([2,2,4])*BP);
       const fEnd=cells.length+fBeats*2; const c0f=cells.length;
       const nivel=plan(cells.length), d=dens[nivel];
+      if(nivel==='aire' && Math.random()<.65){ // mucho espacio: una idea chica y silencio largo
+        const k=pick(keys); if(cells.length+len(k)<=total) push(k);
+        sil(Math.max(0,Math.min(room()/2, pick([3,4,4,5,6]), Math.max(2,(finSec(cells.length)-cells.length)/2)))); estr='aire'; continue; }
       const pool=['libre','libre','libre','pregunta','pregunta','celda','irregular','ciclo','desplaza']; if(pares.length) pool.push('pegadas','pegadas');
       pool.push('motivos','motivos','motivos','motivos','motivos','motivos','motivos','motivos'); if(multis<2 && room()>=36) pool.push('multi','multi');
+      if(nivel==='densa'){ pool.length=0; pool.push('libre','libre','libre','celda','motivos'); if(pares.length) pool.push('pegadas','pegadas','pegadas'); }
       let pl=pool.filter(x=>x!==lastStrat || x==='motivos'); if(!st.desp) pl=pl.filter(x=>!['ciclo','desplaza'].includes(x)); let strat=pick(pl); lastStrat=strat; estr=strat;
       const fits=k=>cells.length+len(k)<=fEnd;
       let hecho=false;
@@ -495,7 +503,7 @@ function generar(){
           if(vuelve && beat===m.beat) break;
           if(cells.length+m.L*2+2>total) break;
           tocarMotivo(m); if(!vuelve) motivos.push({...m,beat}); previoBeat=beat;
-          const sep = nivel==='densa' ? pick([1,2,2]) : pick([2,3,3,4]);
+          const sep = nivel==='densa' ? pick([0,1,1]) : nivel==='aire' ? pick([3,4,5]) : pick([2,2,3]);
           sil(Math.min(sep, room()/2));
         }
         hecho=true;
@@ -589,6 +597,9 @@ function generar(){
         const tot=Object.values(cnt).reduce((a,b)=>a+b,0)||1; const minShare = keys.length===2 ? 0.3 : 0.5/keys.length;
         for(const k of keys) if(cnt[k]/tot<minShare) fallas+=2; }
       if(repMax(marks,total)>MAXREP) fallas+=6;
+      // variedad de espacio: en líneas de 8 compases o más tiene que haber partes con poco y con mucho espacio
+      if(st.bars>=8){ const w=[]; for(let b=0;b+2<=st.bars;b+=2){ let a=0; for(let i=b*CBv;i<(b+2)*CBv;i+=2) if('NT'.includes(c[i])||c[i+1]==='N') a++; w.push(a/(2*BP)); }
+        const mx=Math.max(...w), mn=Math.min(...w); if(mx-mn<0.35) fallas+=3; if(mx<0.5) fallas+=1; if(mn>0.25) fallas+=1; }
       // sorpresa: con 2 o más unidades, que la misma unidad no aparezca muchas veces al hilo
       // (salvo en desplazamientos y ciclos, donde la repetición es el punto) y que las tandas no tengan siempre el mismo largo
       if(keys.length>1){ const ms=marks.filter(m=>m.pos<total).sort((a,b)=>a.pos-b.pos), rl=[]; let r=0, prev=null;
@@ -777,7 +788,9 @@ function dibujar(){
   const CBv=CB(), BP=BPB(), OFF=pagOff(), NB=pagBars(), cells=st.cells.slice(OFF*CBv,(OFF+NB)*CBv);
   const cw=svg.clientWidth||1000, angosto=cw<560;
   // en el teléfono el dibujo usa un lienzo más chico para que las figuras queden de un tamaño legible
-  const W=angosto ? ({3:300,4:340,5:340,7:340}[BP]) : 1000, perLine=angosto ? 1 : (st.view==='fijo' ? 2 : ({3:4,4:4,5:3,7:2}[BP]));
+  // teléfono: 2 compases por línea en 3/4 y 4/4 (uno en ritmo fijo, 5/4 y 7/4)
+  const dosXl=angosto && BP<=4 && st.view!=='fijo';
+  const W=angosto ? (dosXl ? (BP===3?390:440) : ({3:300,4:340,5:340,7:340}[BP])) : 1000, perLine=angosto ? (dosXl?2:1) : (st.view==='fijo' ? 2 : ({3:4,4:4,5:3,7:2}[BP]));
   dibujar._ang=angosto;
   const sp=7, left=52, right=8, top=40, lineH=(svg.clientWidth||1000)<560?88:118;
   const barW=(W-left-right)/perLine, ew=(barW-22)/CBv;
